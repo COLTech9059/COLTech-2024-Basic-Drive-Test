@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.LimeLight;
@@ -14,8 +12,7 @@ public class LimeLightCommand extends Command{
     {
         limelight = newLime;
         drivetrain = newDrive;
-        addRequirements(limelight);
-        addRequirements(drivetrain);
+        addRequirements(limelight, drivetrain);
     }
     //# EXECUTE
     /* Overrides the execute function to constantly drive the robot given inputs.
@@ -24,5 +21,10 @@ public class LimeLightCommand extends Command{
     public void execute()
     {
         limelight.runLimelight(drivetrain);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return limelight.getEnabled();
     }
 }

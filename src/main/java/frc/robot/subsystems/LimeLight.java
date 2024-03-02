@@ -72,7 +72,7 @@ public class LimeLight extends SubsystemBase {
         SmartDashboard.putNumber("DistFromTarget", estimDist);
         SmartDashboard.putNumber("VisibleTargetID", this.curTargetID);
 
-        enabled = true;
+        start();
     }
 
 
@@ -126,6 +126,8 @@ public class LimeLight extends SubsystemBase {
      */
     public void start()
     {
+        stop();
+        
         enabled = true;
         targetFound = false;
     }
@@ -324,6 +326,10 @@ public class LimeLight extends SubsystemBase {
         SmartDashboard.putNumber("DistFromTarget", estimDist);
         SmartDashboard.putNumber("VisibleTargetID", this.curTargetID);
         SmartDashboard.putNumber("TurnPowerAdjust", showTurnPower);
+    }
+
+    public boolean getEnabled(){
+        return enabled;
     }
 
     public void runLimelight (DriveTrain drivetrain) 

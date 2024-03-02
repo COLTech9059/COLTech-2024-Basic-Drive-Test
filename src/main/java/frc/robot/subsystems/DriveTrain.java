@@ -109,85 +109,50 @@ public class DriveTrain extends SubsystemBase
     leftEncoder.setPosition(0.0);
     rightEncoder.setPosition(0.0);
   }
-  //#FACTORYRESET
-  /*This method doesn't entirely factory reset the motors.
-    We simply reassign the followers and invert the motors again.
-   * 
-  */
-  public void factoryReset() 
+
+
+  static double rightWheelRotations = 0;
+  static double leftWheelRotations = 0;
+
+  static double rightDistance = 0;
+  static double leftDistance = 0;
+
+  //#ENCODERMATH
+  //This function handles all of the math and data necessary to use the encoders
+  public static void encoderMath() 
   {
-    // Reset the factory defaults for the motor controllers
-    leftLead.restoreFactoryDefaults();
-    rightLead.restoreFactoryDefaults();
-    leftLead.restoreFactoryDefaults();
-    rightLead.restoreFactoryDefaults(); 
+    //All the math to convert encoder rotations to horizontal distance in inches
+    rightWheelRotations = rightEncoder.getPosition() / 8.45;
+    leftWheelRotations = leftEncoder.getPosition() / 8.45;
 
-    // Set up the motor controller followers
-    leftFollower.follow(leftLead);
-    rightFollower.follow(rightLead);
+    rightDistance = rightWheelRotations * 18;
+    leftDistance = leftWheelRotations * 18;
 
-    // Invert the right side motor controller
-    rightLead.setInverted(true);
-
-    //Disable the safety feature of the drivetrain, which can be very difficult to work around
-    HamsterDrive.setSafetyEnabled(false);
-
-    // Set deadband for the differential drive
-    HamsterDrive.setDeadband(0.1);
-
-    //Set the encoder positions to zero, effectively resetting them
-    leftEncoder.setPosition(0);
-    rightEncoder.setPosition(0);
-
-    //Set the motors to accelerate and decelerate slower
-    rightLead.setOpenLoopRampRate(0.25);
-    leftLead.setOpenLoopRampRate(0.25);
   }
 
 
 
-      static double rightWheelRotations = 0;
-      static double leftWheelRotations = 0;
+  //#DRIVE
+  //This method determines what to do with the motors based on the controller input
+  public void drive(double forwardPow, double turnPow) 
+  {
+    //If the values are less than a certain point 
+    // if (Math.abs(forwardPow) < .1) forwardPow = 0.0;
+    // if (Math.abs(turnPow) < .1) turnPow = 0.0;
+    //Move the robot.
+    HamsterDrive.arcadeDrive(forwardPow, turnPow, true);
+  }
 
-      static double rightDistance = 0;
-      static double leftDistance = 0;
+  public void log(){
+    // Displays the Left and Right encoder rates on the dashboard with the specified names
+    SmartDashboard.putNumber("Left Encoder Distance", leftDistance);
+    SmartDashboard.putNumber("Right Encoder Distance", rightDistance);
+  }
 
-      //#ENCODERMATH
-      //This function handles all of the math and data necessary to use the encoders
-      public static void encoderMath() 
-      {
-        //All the math to convert encoder rotations to horizontal distance in inches
-        rightWheelRotations = rightEncoder.getPosition() / 8.45;
-        leftWheelRotations = leftEncoder.getPosition() / 8.45;
-
-        rightDistance = rightWheelRotations * 18;
-        leftDistance = leftWheelRotations * 18;
-
-      }
-
-
-
-      //#DRIVE
-      //This method determines what to do with the motors based on the controller input
-      public void drive(double forwardPow, double turnPow) 
-      {
-        //If the values are less than a certain point 
-        // if (Math.abs(forwardPow) < .1) forwardPow = 0.0;
-        // if (Math.abs(turnPow) < .1) turnPow = 0.0;
-        //Move the robot.
-        HamsterDrive.arcadeDrive(forwardPow, turnPow, true);
-      }
-
-      public void log(){
-        // Displays the Left and Right encoder rates on the dashboard with the specified names
-        SmartDashboard.putNumber("Left Encoder Distance", leftDistance);
-        SmartDashboard.putNumber("Right Encoder Distance", rightDistance);
-      }
-
-      @Override
-      public void periodic(){
-        encoderMath();
-        log();
-      }
+  @Override
+  public void periodic(){
+    encoderMath();
+    log();
+  }
 
 }

@@ -495,7 +495,7 @@ public class Manipulator
             {
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
                 if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
-                if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
+                if (( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();

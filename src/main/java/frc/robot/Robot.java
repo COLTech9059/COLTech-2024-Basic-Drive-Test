@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DriveCommand;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.LimeLight;
+// import frc.robot.commands.DriveCommand;
+// import frc.robot.subsystems.DriveTrain;
+// import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Manipulator;
-import java.util.function.DoubleSupplier;
+// import java.util.function.DoubleSupplier;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,14 +24,16 @@ public class Robot extends TimedRobot {
   //Autonomous command????
   private Command m_autonomousCommand;
   //Objects to be used in various robot functions.
-  private DriveTrain drivetrain = new DriveTrain();
-  private LimeLight limelight = new LimeLight();
+  // private DriveTrain drivetrain = new DriveTrain();
+  // private LimeLight limelight = new LimeLight();
   private Manipulator manipulator = new Manipulator();
   //Set up DriveCommand and its DoubleSuppliers.
-  private DoubleSupplier forward = () -> IO.dController.getLeftY();
-  private DoubleSupplier turn = () -> IO.dController.getRightX();
-  private DriveCommand dCommand = new DriveCommand(drivetrain, forward, turn);
-  
+  // private DoubleSupplier forward = () -> IO.dController.getLeftY();
+  // private DoubleSupplier turn = () -> IO.dController.getRightX();
+  // private DriveCommand dCommand = new DriveCommand(drivetrain, forward, turn);
+  //Robot Container
+  private RobotContainer m_RobotContainer;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -40,10 +42,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    drivetrain.factoryReset();
+    // drivetrain.factoryReset();
     manipulator.initializeManipulator();
 
-    drivetrain.setDefaultCommand(dCommand);
+    m_RobotContainer = new RobotContainer();
   }
 
   /**
@@ -67,9 +69,9 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     manipulator.initializeManipulator();
-    dCommand.cancel();
-    drivetrain.reset();
-    limelight.stop();
+    // dCommand.cancel();
+    // drivetrain.reset();
+    // limelight.stop();
   }
 
   @Override
@@ -79,16 +81,17 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     // schedule the autonomous command (example)
+    m_autonomousCommand = m_RobotContainer.getAutoCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    limelight.start();
+    // limelight.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    limelight.runLimelight(drivetrain);
+    // limelight.runLimelight(drivetrain);
   }
 
 
@@ -102,9 +105,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    dCommand.schedule();
+    // dCommand.schedule();
 
-    limelight.stop();
+    // limelight.stop();
     driveTime.stop();
     driveTime.reset();
     driveTime.start();
