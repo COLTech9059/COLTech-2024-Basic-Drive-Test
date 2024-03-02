@@ -31,11 +31,11 @@ public class Manipulator
     RelativeEncoder rightIntakeEncoder = intakeMotor.getEncoder();
 
     //Create the digital input objects
-    static DigitalInput intakeSensor = new DigitalInput(0);
+    static DigitalInput intakeSensor = new DigitalInput(Constants.intakeSensorID);
 
     //Reading true = Sensor not triggered, reading false = Sensor is triggered
-    DigitalInput frontSensor = new DigitalInput(1); 
-    DigitalInput backSensor = new DigitalInput(2);
+    DigitalInput frontSensor = new DigitalInput(Constants.frontSensorID); 
+    DigitalInput backSensor = new DigitalInput(Constants.backSensorID);
 
     private boolean usingDigitalSensors = true;
 
