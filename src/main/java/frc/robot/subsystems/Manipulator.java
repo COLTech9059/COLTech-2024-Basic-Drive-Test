@@ -487,10 +487,8 @@ public class Manipulator
                 if ( !IO.oController.getYButton() && !IO.oController.getXButton() && (( IO.oController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 ))) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
-                // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
-                // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
                 if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
                 if (IO.oController.getYButtonPressed()) intakePosition(5);
@@ -508,10 +506,8 @@ public class Manipulator
                 if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
-                // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
-                // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
                 if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
                 if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
@@ -526,8 +522,7 @@ public class Manipulator
         {
             if (doesIntake) 
             {
-                intakePosition(5);
-                intake(3);
+                if (intakePosition(5)) intake(3);
             }
             if (doesAim) shootPosition(5);
             if (doesShoot) shootNote(3);
