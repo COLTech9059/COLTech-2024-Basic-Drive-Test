@@ -183,26 +183,4 @@ public class DriveTrain extends SubsystemBase
         stopDrive();
         }
       }
-
-
-
-      private Timer stepDownTime = new Timer();
-
-      //#STEPDOWNDRIVE
-      //This method will halve the speed of the drivetrain for half a second before stopping it entirely; 
-      //Acts as a buffer to stop the robot fron lifting off the ground
-      private void stepDownDrive() 
-      {
-        stepDownTime.reset();
-        stepDownTime.start();
-
-        if (stepDownTime.get() <= 0.5) 
-        {
-          HamsterDrive.arcadeDrive(forwardPower/2, 0, false);
-        }
-        else if (stepDownTime.get() > 0.5) 
-        {
-          stopDrive();
-        }
-      }
 }
