@@ -335,15 +335,6 @@ public class LimeLight {
     public boolean llIsActive = false;
     public void runLimelight (DriveTrain drivetrain) 
     {
-        // if (!targetFound) 
-        // {
-        //     seekTarget(drivetrain);
-        // }
-        // else 
-        // {
-        //     // estimateDist();
-        //     getInRangeUsingDistance(drivetrain);
-        // }
         if(seekTarget(drivetrain)) getInRangeUsingDistance(drivetrain);
     }
 }

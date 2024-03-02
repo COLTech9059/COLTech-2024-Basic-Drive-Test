@@ -51,15 +51,23 @@ public class DriveTrain extends SubsystemBase
 
   Timer turnTimer = new Timer();
 
+
   //#AUTODRIVE
   //This method drives the auto for _ amount of time in a + or - direction
+  /* @Param speed     The forward speed of the robot, can be negative
+   * @Param distance  The distance that the robot will drive
+   * @Param turn      The speed at which the robot will turn, must be used seperately from regular driving
+   * @Param turnTime  The length of time for which the robot will turn
+  */ 
   public void autoDrive(double speed, double distance, double turn, double turnTime) 
   {
+    distance = Math.abs(distance);
     rightDistance = 0;
     turnTimer.reset();
     turnTimer.start();
     rightEncoder.setPosition(0);
     leftEncoder.setPosition(0);
+    rightDistance = Math.abs(rightEncoder.getPosition());
 
     //Drive with positive distance
     if (distance > 0 && rightDistance < distance) 
@@ -67,16 +75,6 @@ public class DriveTrain extends SubsystemBase
       HamsterDrive.arcadeDrive(speed, 0, false);
     } 
     else if (rightDistance >= distance) 
-    {
-      HamsterDrive.arcadeDrive(0, 0, false);
-    }
-
-    //Drive with negative distance
-    if (distance < 0 && rightDistance > distance) 
-    {
-      HamsterDrive.arcadeDrive(-speed, 0, false);
-    } 
-    else if (rightDistance <= distance) 
     {
       HamsterDrive.arcadeDrive(0, 0, false);
     }
