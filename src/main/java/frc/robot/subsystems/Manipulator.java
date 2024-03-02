@@ -31,8 +31,11 @@ public class Manipulator
     RelativeEncoder rightIntakeEncoder = intakeMotor.getEncoder();
 
     //Create the digital input objects
-    static DigitalInput beamSensor = new DigitalInput(0);
-    DigitalInput intakeSensor = new DigitalInput(1); //Reading true = Sensor not triggered, reading false = Sensor is triggered
+    static DigitalInput intakeSensor = new DigitalInput(0);
+
+    //Reading true = Sensor not triggered, reading false = Sensor is triggered
+    DigitalInput frontSensor = new DigitalInput(1); 
+    DigitalInput backSensor = new DigitalInput(2);
 
     private boolean usingDigitalSensors = true;
 
@@ -85,18 +88,18 @@ public class Manipulator
 
     //#INTAKEPOSITION
     //This method will run the manipulator base motors until the magnetic sensor is triggered at the amp spitting position
-    public void intakePosition(double timeout) 
+    public boolean intakePosition(double timeout) 
     {
         posTimer.reset();
         posTimer.start();
 
         if (posTimer.get() <= timeout) 
         {
-            if (intakeSensor.get()) 
+            if (frontSensor.get()) 
             {
             rightBaseMotor.set(0.3);
             } 
-            else if (!intakeSensor.get()) 
+            else if (!frontSensor.get()) 
             {
             rightBaseMotor.set(0);
             rightBaseEncoder.setPosition(0);
@@ -114,6 +117,7 @@ public class Manipulator
         didIntakePosition = false;
         // led.setBoard("red");
         }
+        return didIntakePosition;
     }
 
 
@@ -134,69 +138,71 @@ public class Manipulator
     private static Timer shootPosTime = new Timer();
     private boolean didShootPosition = false;
 
-    // //#SHOOTPOSITION
-    // //This method will bring the manipulator to a position for it to shoot from
-    // public void shootPosition(double timeout) 
-    // {
-    //     shootPosTime.reset();
-    //     shootPosTime.start();
+    //#SHOOTPOSITION
+    //This method will bring the manipulator to a position for it to shoot from
+    public boolean shootPosition(double timeout) 
+    {
+        shootPosTime.reset();
+        shootPosTime.start();
 
-    //     if (shootPosTime.get() <= timeout) 
-    //     {
-    //         if (rightBaseEncoder.getPosition() < Constants.shootPosition) 
-    //         {
-    //             rightBaseMotor.set(0.3);
-    //         } 
-    //         else if (rightBaseEncoder.getPosition() > Constants.shootPosition)
-    //         {
-    //             rightBaseMotor.set(-0.3);
-    //         } 
-    //         else if (rightBaseEncoder.getPosition() >= Constants.shootPosition - 0.5 && rightBaseEncoder.getPosition() <= Constants.shootPosition - 0.5)
-    //         {
-    //             rightBaseMotor.set(0);
-    //             didShootPosition = true;
-    //             // led.setBoard("green");
-    //         }
-    //     } 
-    //     else 
-    //     {
-    //     rightBaseMotor.set(0);
-    //     didShootPosition = false;
-    //     // led.setBoard("red");
-    //     }
-    // }
+        if (shootPosTime.get() <= timeout) 
+        {
+            if (rightBaseEncoder.getPosition() < Constants.shootPosition) 
+            {
+                rightBaseMotor.set(0.3);
+            } 
+            else if (rightBaseEncoder.getPosition() > Constants.shootPosition)
+            {
+                rightBaseMotor.set(-0.3);
+            } 
+            else if (rightBaseEncoder.getPosition() >= Constants.shootPosition + 0.5 && rightBaseEncoder.getPosition() <= Constants.shootPosition - 0.5)
+            {
+                rightBaseMotor.set(0);
+                didShootPosition = true;
+                // led.setBoard("green");
+            }
+        } 
+        else 
+        {
+        rightBaseMotor.set(0);
+        didShootPosition = false;
+        // led.setBoard("red");
+        }
+        return didShootPosition;
+    }
 
 
     private static Timer ampPosTime = new Timer();
     private boolean didAmpPosition = false;
 
-    // //#AMPPOSITION
-    // //This method will bring the manipulator to a position for it to shoot from
-    // public void ampPosition(double timeout) 
-    // {
-    //     ampPosTime.reset();
-    //     ampPosTime.start();
+    //#AMPPOSITION
+    //This method will bring the manipulator to a position for it to score in the amp
+    public boolean ampPosition(double timeout) 
+    {
+        ampPosTime.reset();
+        ampPosTime.start();
 
-    //     if (ampPosTime.get() <= timeout) 
-    //     {
-    //         if (rightBaseEncoder.getPosition() <= Constants.ampPosition) 
-    //         {
-    //         rightBaseMotor.set(0.3);
-    //         } 
-    //         else 
-    //         {
-    //         rightBaseMotor.set(0);
-    //         didAmpPosition = true;
-    //         // led.setBoard("green");
-    //         }
-    //     } 
-    //     else 
-    //     {
-    //     rightBaseMotor.set(0);
-    //     didAmpPosition = false;
-    //     // led.setBoard("red");
-    //     }
-    // }
+        if (ampPosTime.get() <= timeout) 
+        {
+            if (rightBaseEncoder.getPosition() <= Constants.ampPosition + 1) 
+            {
+            rightBaseMotor.set(-0.3);
+            } 
+            else 
+            {
+            rightBaseMotor.set(0);
+            didAmpPosition = true;
+            // led.setBoard("green");
+            }
+        } 
+        else 
+        {
+        rightBaseMotor.set(0);
+        didAmpPosition = false;
+        // led.setBoard("red");
+        }
+        return didAmpPosition;
+    }
 
 
         //#MANIPULATORDASHBOARD
@@ -207,8 +213,8 @@ public class Manipulator
             SmartDashboard.putBoolean("Is Manual?", usingDigitalSensors);
 
             //Push the digital sensor data to the shuffleboard
-            SmartDashboard.putBoolean("Beam Sensor", beamSensor.get());
-            SmartDashboard.putBoolean("Magnetic Sensor", intakeSensor.get());
+            SmartDashboard.putBoolean("Beam Sensor", intakeSensor.get());
+            SmartDashboard.putBoolean("Magnetic Sensor", frontSensor.get());
 
             //Push the encoder values to shuffleboard
             SmartDashboard.putNumber("Manipulator Base Encoder", rightBaseEncoder.getPosition());
@@ -216,34 +222,34 @@ public class Manipulator
 
 
 
-    //     public static boolean didIntake = false;
-    //     private static Timer intakeTime = new Timer();
+        public static boolean didIntake = false;
+        private static Timer intakeTime = new Timer();
 
-    //     //#INTAKE
-    //     //This method will intake a note
-    //     public void intake(double timeout) 
-    //     {
-    //         intakeTime.reset();
-    //         intakeTime.start();
+        //#INTAKE
+        //This method will intake a note
+        public void intake(double timeout) 
+        {
+            intakeTime.reset();
+            intakeTime.start();
 
-    //         if (intakeTime.get() <= timeout) 
-    //         {
-    //             if (!beamSensor.get()) 
-    //             {
-    //             intakeMotor.set(0.4);
-    //             } 
-    //             else 
-    //             {
-    //             intakeMotor.set(0);
-    //             didIntake = true;
-    //             }
-    //         } 
-    //         else 
-    //         {
-    //         intakeMotor.set(0);
-    //         didIntake = false;
-    //         }
-    //     }
+            if (intakeTime.get() <= timeout) 
+            {
+                if (!intakeSensor.get()) 
+                {
+                intakeMotor.set(0.4);
+                } 
+                else 
+                {
+                intakeMotor.set(0);
+                didIntake = true;
+                }
+            } 
+            else 
+            {
+            intakeMotor.set(0);
+            didIntake = false;
+            }
+        }
 
         //#INTAKE
         //This method will manually intake a note
@@ -282,36 +288,37 @@ public class Manipulator
         private Timer shootTime = new Timer();
         private static Timer shootTimeout = new Timer();
 
-        // //#SHOOTNOTE
-        // //This method will shoot a note
-        // public void shootNote(double timeout) 
-        // {
+        //#SHOOTNOTE
+        //This method will shoot a note
+        public void shootNote(double timeout) 
+        {
 
-        //     shootTimeout.reset();
-        //     shootTimeout.start();
-        //     shootTime.reset();
+            shootTimeout.reset();
+            shootTimeout.start();
+            shootTime.reset();
 
-        //     if (shootTimeout.get() <= timeout) 
-        //     {
-        //     //If the beam sensor is active, the intake motor runs in reverse until the beam sensor is deactivated,
-        //     //at which point the intake motor will stop and the amp motor will run for 1 second at full power to shoot
-        //         if (beamSensor.get()) 
-        //         {
-        //         intakeMotor.set(0.4);
-        //         } 
-        //         else if (!beamSensor.get()) 
-        //         {
-        //         shootTime.start();
-        //         intakeMotor.set(0);
-        //         ampMotor.set(-0.6);
-        //         } 
-        //         if (!beamSensor.get() && shootTime.get() >= 1) 
-        //         {
-        //         ampMotor.set(0);
-        //         shootTime.stop();
-        //         }
-        //     }
-        // }
+            ampMotor.set(-0.6);
+            
+            if (shootTimeout.get() <= timeout) 
+            {
+            //If the beam sensor is active, the intake motor runs in reverse until the beam sensor is deactivated,
+            //at which point the intake motor will stop and the amp motor will run for 1 second at full power to shoot
+                if (intakeSensor.get()) 
+                {
+                    intakeMotor.set(0.3);
+                } 
+                else if (!intakeSensor.get()) 
+                {
+                    shootTime.start();
+                } 
+                if (!intakeSensor.get() && shootTime.get() >= 1) 
+                {
+                    intakeMotor.set(0);
+                    ampMotor.set(0);
+                    shootTime.stop();
+                }
+            }
+        }
 
         //#SHOOTNOTE
         //This method will shoot a note manually
@@ -328,39 +335,40 @@ public class Manipulator
         }
 
 
-        // private Timer ampTime = new Timer();
-        // private static Timer ampTimeout = new Timer();
+        private Timer ampTime = new Timer();
+        private static Timer ampTimeout = new Timer();
 
-        // //#AMPSCORE
-        // //This method will score a note in the amp
-        // public void ampScore(double timeout) 
-        // {
+        //#AMPSCORE
+        //This method will score a note in the amp
+        public void ampScore(double timeout) 
+        {
 
-        //     ampTimeout.reset();
-        //     ampTimeout.start();
-        //     ampTime.reset();
+            ampTimeout.reset();
+            ampTimeout.start();
+            ampTime.reset();
 
-        //     if (ampTimeout.get() <= timeout) 
-        //     {
-        //     //If the beam sensor is active, the intake motor runs in reverse until the beam sensor is deactivated, at
-        //     //which point the intake motor will stop and the amp motor will run for 1.5 seconds at 40% power to score
-        //         if (beamSensor.get()) 
-        //         {
-        //         intakeMotor.set(0.4);
-        //         }
-        //         else if (!beamSensor.get()) 
-        //         {
-        //         ampTime.start();
-        //         intakeMotor.set(0);
-        //         ampMotor.set(-0.7);
-        //         } 
-        //         if (!beamSensor.get() && ampTime.get() >= 1.5) 
-        //         {
-        //         ampMotor.set(0);
-        //         ampTime.stop(); 
-        //         }
-        //     }
-        // }
+            ampMotor.set(-0.3);
+
+            if (ampTimeout.get() <= timeout) 
+            {
+            //If the beam sensor is active, the intake motor runs in reverse until the beam sensor is deactivated, at
+            //which point the intake motor will stop and the amp motor will run for 1.5 seconds at 40% power to score
+                if (intakeSensor.get()) 
+                {
+                intakeMotor.set(0.3);
+                }
+                else if (!intakeSensor.get()) 
+                {
+                ampTime.start();
+                } 
+                if (!intakeSensor.get() && ampTime.get() >= 1) 
+                {
+                ampMotor.set(0);
+                intakeMotor.set(0);
+                ampTime.stop(); 
+                }
+            }
+        }
 
         //#AMPSCORE
         //This method will score in the amp manually
@@ -424,9 +432,8 @@ public class Manipulator
         //This method will increase the movement speed of the manipulator as the trigger is held more
         public void rampUpManipulator(double power) 
         {
-            double moveSpeed = 0;
-            moveSpeed = power * .80;
-            rightBaseMotor.set(moveSpeed);
+            power *= 1;
+            rightBaseMotor.set(power);
         }
 
 
@@ -454,11 +461,15 @@ public class Manipulator
 
             if (rightBaseEncoder.getPosition() > holdPos + 1.5)
             {
-                rightBaseMotor.set(-0.1);
+                rightBaseMotor.set(-0.2);
             }
             if (rightBaseEncoder.getPosition() < holdPos - 1.5)
             {
-                rightBaseMotor.set(0.1);
+                rightBaseMotor.set(0.2);
+            }
+            if (rightBaseEncoder.getPosition() < holdPos + 1.5 && rightBaseEncoder.getPosition() > holdPos - 1.5) 
+            {
+                rightBaseMotor.set(0);
             }
         }
 
@@ -471,8 +482,8 @@ public class Manipulator
             
             if (!usingDigitalSensors) 
             {
-                if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
+                if (IO.dController.getRightTriggerAxis() > 0.2 && backSensor.get()) rampUpManipulator(-IO.dController.getRightTriggerAxis());
+                if (IO.dController.getLeftTriggerAxis() > 0.2 && frontSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( !IO.oController.getYButton() && !IO.oController.getXButton() && (( IO.oController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 ))) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
@@ -482,19 +493,18 @@ public class Manipulator
                 // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
                 if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
-                if (IO.oController.getYButton()) intakePosition(5);
+                if (IO.oController.getYButtonPressed()) intakePosition(5);
                 if (IO.oController.getXButton()) shootPosition();
                 if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
-                // if (IO.oController.getBButton()) 
-                // {
-                //     ampPosition(5);
-                //     ampScore(4);
-                // }
+                if (IO.oController.getBButton()) 
+                {
+                    if (ampPosition(5)) ampScore(4);
+                }
             } 
             else 
             {
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
+                if (IO.dController.getLeftTriggerAxis() > 0.2 && frontSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
@@ -514,14 +524,14 @@ public class Manipulator
         //This method will do all of the actions for our manipulator during auto
         public void autoManipulator(boolean doesIntake, boolean doesAim, boolean doesShoot, boolean doesAmpAim, boolean doesAmp) 
         {
-        //     if (doesIntake) 
-        //     {
-        //         intakePosition(5);
-        //         intake(3);
-        //     }
-        //     if (doesAim) shootPosition(5);
-        //     if (doesShoot) shootNote(3);
-        //     if (doesAmpAim) ampPosition(5);
-        //     if (doesAmp) ampScore(4);
+            if (doesIntake) 
+            {
+                intakePosition(5);
+                intake(3);
+            }
+            if (doesAim) shootPosition(5);
+            if (doesShoot) shootNote(3);
+            if (doesAmpAim) ampPosition(5);
+            if (doesAmp) ampScore(4);
         }
 }
