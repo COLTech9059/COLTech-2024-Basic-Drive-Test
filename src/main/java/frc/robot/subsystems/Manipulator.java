@@ -293,7 +293,7 @@ public class Manipulator
         //This method will manually intake a note
         public void intake() 
         {
-            intakeMotor.set(0.4);
+            intakeMotor.set(-0.4);
         }
 
         Timer revIntakeTime = new Timer();
@@ -307,7 +307,7 @@ public class Manipulator
 
             if (revIntakeTime.get() < 0.5) 
             {
-                intakeMotor.set(-0.2);
+                intakeMotor.set(0.2);
             }
             else
             {

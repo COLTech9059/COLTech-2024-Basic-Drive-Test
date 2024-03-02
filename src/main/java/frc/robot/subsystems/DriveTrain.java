@@ -160,8 +160,8 @@ public class DriveTrain extends SubsystemBase
         // Adjust Speed/Power so that it will always be at a max of 80%
         double change = 0;
 
-        if (forward < 0) change = 0.2;
-        if (forward > 0) change = -0.2;
+        if (forward < 0) change = 0.1;
+        if (forward > 0) change = -0.1;
 
         forwardPower = forward + change;
 
@@ -169,7 +169,7 @@ public class DriveTrain extends SubsystemBase
         double turn = IO.dController.getRightX();
 
         // Reduce Turn Power
-        double turnPower = turn *= 1;
+        double turnPower = turn *= 0.8;
 
         // Drive the Robot with <forwardPower> and <turnPower>
         if (IO.dController.getRightX() > 0.1 || IO.dController.getRightX() < -0.1 || IO.dController.getLeftY() > 0.1 || IO.dController.getLeftY() < -0.1) 
