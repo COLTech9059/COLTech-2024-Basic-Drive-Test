@@ -94,11 +94,16 @@ public class Robot extends TimedRobot {
       {
         manipulator.stopIntakeMotor();
         manipulator.stopSpinUp();
+        segmentFinished = true;
       }
     }
-    if (ID ==2)
+    if (ID == 2)
     {
-
+      drivetrain.autoDrive(0.5, 40, 0, 0);
+      manipulator.autoManipulator(true, false, false, false, false);
+      drivetrain.autoDrive(-0.5, 40, 0, 0);
+      manipulator.autoManipulator(false, true, true, false, false);
+      segmentFinished = true;
     }
     return segmentFinished;
   }
