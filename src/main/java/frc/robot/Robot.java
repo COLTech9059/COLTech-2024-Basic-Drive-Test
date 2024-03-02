@@ -94,8 +94,6 @@ public class Robot extends TimedRobot {
     // limelight.runLimelight(drivetrain);
   }
 
-
-  Timer driveTime = new Timer();
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -108,9 +106,6 @@ public class Robot extends TimedRobot {
     // dCommand.schedule();
 
     // limelight.stop();
-    driveTime.stop();
-    driveTime.reset();
-    driveTime.start();
   }
 
   /** This function is called periodically during operator control. */
