@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.XboxController;
 // import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-    //Subsystem declarations.
+    //Subsy stem declarations.
     private final DriveTrain m_DriveTrain = new DriveTrain();
     private final LimeLight m_LimeLight = new LimeLight();
-    private final Manipulator m_Manipulator = new Manipulator();
+    // private final Manipulator m_Manipulator = new Manipulator();
     //Setup Controller.
     private final XboxController xbContMovement = new XboxController(0);
     private final XboxController xbContArm = new XboxController(1);
