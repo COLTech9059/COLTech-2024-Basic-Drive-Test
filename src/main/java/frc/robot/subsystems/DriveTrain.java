@@ -96,10 +96,10 @@ public class DriveTrain extends SubsystemBase
   {
 
     // Reset the factory defaults for the motor controllers
-    leftP.restoreFactoryDefaults();
-    rightP.restoreFactoryDefaults();
-    leftF.restoreFactoryDefaults();
-    rightF.restoreFactoryDefaults(); 
+    // leftP.restoreFactoryDefaults();
+    // rightP.restoreFactoryDefaults();
+    // leftF.restoreFactoryDefaults();
+    // rightF.restoreFactoryDefaults(); 
 
     // Set up the motor controller followers
     leftF.follow(leftP);

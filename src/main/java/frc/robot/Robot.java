@@ -62,11 +62,47 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
+  public void disabledInit() 
+  {
     manipulator.initializeManipulator();
-    dCommand.cancel();
+    // dCommand.cancel();
     drivetrain.resetDrive();
+
+    manipulator.stopSpinUp();
+    manipulator.stopIntake();
+
+    dropTime.stop();
+    dropTime.reset();
   }
+
+  private boolean segmentFinished = false;
+
+  //#AUTOSEGMENT
+  //This method will perform a segment of an auto program
+  public boolean autoSegment(int ID)
+  {
+    if (ID == 1)
+    {
+      manipulator.intakePosition(5);
+      manipulator.spinUp();
+
+      if (dropTime.get() >= 1.7)
+      {
+        manipulator.runIntakeMotor();
+      }
+      if (dropTime.get() >= 2.5)
+      {
+        manipulator.stopIntakeMotor();
+        manipulator.stopSpinUp();
+      }
+    }
+    if (ID ==2)
+    {
+
+    }
+    return segmentFinished;
+  }
+
 
   @Override
   public void disabledPeriodic() {}
@@ -81,12 +117,23 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
     limelight.start();
+
+    dropTime.start();
   }
 
+  private Timer dropTime = new Timer();
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    limelight.runLimelight(drivetrain);
+    // limelight.runLimelight(drivetrain);
+    
+    autoSegment(1);
+
+    // if (manipulator.intakePosition(5))
+    // {
+    //   manipulator.spinUp();
+    //   if (manipulator.shootPosition(5)) manipulator.runIntakeMotor();
+    // }
   }
 
 

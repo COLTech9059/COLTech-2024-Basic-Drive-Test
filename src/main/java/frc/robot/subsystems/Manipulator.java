@@ -24,10 +24,10 @@ public class Manipulator
     CANSparkMax followerAmpMotor = new CANSparkMax(Constants.ampFollowID, MotorType.kBrushless);
 
     //Create the encoder objects
-    RelativeEncoder leftBaseEncoder = leftBaseMotor.getEncoder();
+    // RelativeEncoder leftBaseEncoder = leftBaseMotor.getEncoder();
     RelativeEncoder rightBaseEncoder = rightBaseMotor.getEncoder();
     RelativeEncoder ampEncoder = ampMotor.getEncoder();
-    RelativeEncoder leftIntakeEncoder= followerAmpMotor.getEncoder();
+    RelativeEncoder followerAmpEncoder = followerAmpMotor.getEncoder();
     RelativeEncoder rightIntakeEncoder = intakeMotor.getEncoder();
 
     //Create the digital input objects
@@ -47,33 +47,56 @@ public class Manipulator
         //Reset the digital sensors boolean
         usingDigitalSensors = true;
 
+        didIntakePosition = false;
+        didAmpPosition = false;
+        didShootPosition = false;
+
         //Reset intake boolean
         // if (!beamSensor.get()) {didIntake = false;} else {didIntake = true;}
 
         //Reset the motors to their factory defaults
-        leftBaseMotor.restoreFactoryDefaults();
-        rightBaseMotor.restoreFactoryDefaults();
-        ampMotor.restoreFactoryDefaults();
-        followerAmpMotor.restoreFactoryDefaults();
-        intakeMotor.restoreFactoryDefaults();
+        // leftBaseMotor.restoreFactoryDefaults();
+        // rightBaseMotor.restoreFactoryDefaults();
+        // ampMotor.restoreFactoryDefaults();
+        // followerAmpMotor.restoreFactoryDefaults();
+        // intakeMotor.restoreFactoryDefaults();
 
-        //Set the leftIntakeMotor as a follower
+        //Set the followerAmpMotor as a follower
         followerAmpMotor.follow(ampMotor);
 
         //Set the leftBaseMotor as a follower
         leftBaseMotor.follow(rightBaseMotor);
 
         //Set the encoders to 0, effectively resetting them
-        leftBaseEncoder.setPosition(0);
+        // leftBaseEncoder.setPosition(0);
         rightBaseEncoder.setPosition(0);
         ampEncoder.setPosition(0);
         rightIntakeEncoder.setPosition(0);
-        leftIntakeEncoder.setPosition(0);
+        followerAmpEncoder.setPosition(0);
 
         rightBaseMotor.setOpenLoopRampRate(0.25);
     }
 
 
+    public void runIntakeMotor()
+    {
+        intakeMotor.set(0.4);
+    }
+
+    public void stopIntakeMotor()
+    {
+        intakeMotor.set(0);
+    }
+
+    public void spinUp() 
+    {
+        ampMotor.set(0.6);
+    }
+
+    public void stopSpinUp()
+    {
+        ampMotor.set(0);
+    }
 
     //#manualControl
     //This method toggles the use of digital sensors duting teleop
@@ -107,7 +130,7 @@ public class Manipulator
             {
             rightBaseMotor.set(0);
             rightBaseEncoder.setPosition(0);
-            leftBaseEncoder.setPosition(0);
+            // leftBaseEncoder.setPosition(0);
 
             didIntakePosition = true;
             // led.setBoard("green");
@@ -131,7 +154,7 @@ public class Manipulator
     {
         if (rightBaseEncoder.getPosition() > Constants.shootPosition + 0.5)
         {
-            rightBaseMotor.set(-0.3);
+            rightBaseMotor.set(-0.30);
         }
         if (rightBaseEncoder.getPosition() < Constants.shootPosition - 1)
         {
@@ -155,15 +178,15 @@ public class Manipulator
 
         if (shootPosTime.get() <= timeout) 
         {
-            if (rightBaseEncoder.getPosition() < Constants.shootPosition) 
+            if (rightBaseEncoder.getPosition() < Constants.shootPosition - 2) 
             {
-                rightBaseMotor.set(0.3);
+                rightBaseMotor.set(0.15);
             } 
-            else if (rightBaseEncoder.getPosition() > Constants.shootPosition)
+            else if (rightBaseEncoder.getPosition() > Constants.shootPosition + 1)
             {
-                rightBaseMotor.set(-0.3);
+                rightBaseMotor.set(-0.2);
             } 
-            else if (rightBaseEncoder.getPosition() >= Constants.shootPosition + 0.5 && rightBaseEncoder.getPosition() <= Constants.shootPosition - 0.5)
+            else if (rightBaseEncoder.getPosition() >= Constants.shootPosition - 2 && rightBaseEncoder.getPosition() <= Constants.shootPosition + 1)
             {
                 rightBaseMotor.set(0);
                 didShootPosition = true;
@@ -222,7 +245,7 @@ public class Manipulator
         public void manipulatorDashboard() 
         {
             //Tell if it is in manual or not
-            SmartDashboard.putBoolean("Is Manual?", usingDigitalSensors);
+            SmartDashboard.putBoolean("Is Manual?", !usingDigitalSensors);
 
             //Push the digital sensor data to the shuffleboard
             SmartDashboard.putBoolean("Beam Sensor", intakeSensor.get());
@@ -299,6 +322,24 @@ public class Manipulator
             intakeMotor.set(0);
         }
 
+        private Timer shootTimer = new Timer();
+        public void autoShoot(double shootTime)
+        {
+            shootTimer.start();
+
+            ampMotor.set(0.6);
+            if (shootTimer.get() < shootTime + 1.5 && shootTimer.get() > 1.5) 
+            {
+                intakeMotor.set(0.3);
+            }
+            else if (shootTimer.get() > shootTime + 1.5)
+            {
+                intakeMotor.set(0);
+                ampMotor.set(0);
+                shootTimer.stop();
+                shootTimer.reset();
+            }
+        }
 
         private Timer shootTime = new Timer();
         private static Timer shootTimeout = new Timer();
@@ -342,7 +383,7 @@ public class Manipulator
         //This method will shoot a note manually
         public void shootNote() 
         {
-            ampMotor.set(-0.5);
+            ampMotor.set(0.5);
         }
 
         //#STOPSHOOT
@@ -516,11 +557,12 @@ public class Manipulator
         {
             if (IO.dController.getStartButtonPressed()) manualControl();
             
-            if (!usingDigitalSensors) 
+            if (usingDigitalSensors) 
             {
-                if (IO.dController.getRightTriggerAxis() > 0.2 && backSensor.get()) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && frontSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
-                if ( !IO.oController.getYButton() && !IO.oController.getXButton() && (( IO.oController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 ))) stopManipulator();
+                if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
+                if (IO.dController.getLeftTriggerAxis() > 0.2) rampUpManipulator(IO.dController.getLeftTriggerAxis());
+                if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
+                if (!IO.oController.getAButton() && IO.oController.getYButtonPressed() && IO.oController.getXButton() && IO.oController.getBButton()) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 if (IO.dController.getLeftBumper()) intake();
@@ -538,7 +580,7 @@ public class Manipulator
             else 
             {
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && frontSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
+                if (IO.dController.getLeftTriggerAxis() > 0.2) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
                 if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
