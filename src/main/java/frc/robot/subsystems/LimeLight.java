@@ -1,15 +1,15 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class LimeLight {
+public class LimeLight extends SubsystemBase {
 
     // private LED led = new LED();
-
     //setup networktable upon creation
     private NetworkTable nTable = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry tx = nTable.getEntry("tx");
@@ -30,7 +30,6 @@ public class LimeLight {
     //BOOLEANS
     private boolean enabled = false;
     private boolean targetFound = false;
-    private boolean inPosition = false;
 
     //TIMERS
     private final Timer seekTimer = new Timer();
@@ -117,7 +116,6 @@ public class LimeLight {
         refreshTimer.reset();
         enabled = false;
         targetFound = false;
-        inPosition = false;
     }
 
 
@@ -130,7 +128,6 @@ public class LimeLight {
     {
         enabled = true;
         targetFound = false;
-        inPosition = false;
     }
 
 
@@ -178,7 +175,7 @@ public class LimeLight {
     {
         if(driveTimer.get() > 3.0 && refreshTimer.get() > 3.0)
         {
-            driveTrain.HamsterDrive.arcadeDrive(0, 0);
+            driveTrain.drive(0, 0);
             stop();
             // led.setBoard("red");
         }
@@ -228,13 +225,13 @@ public class LimeLight {
                     }
 
                     showTurnPower = turnPower;
-                    driveTrain.HamsterDrive.arcadeDrive(speed, turnPower);
+                    driveTrain.drive(speed, turnPower);
 
                 } 
                 else 
                 {
                     // led.setBoard("green");
-                    driveTrain.HamsterDrive.arcadeDrive(0, 0);
+                    driveTrain.drive(0, 0);
                     stop();
                 }
             }
@@ -254,7 +251,7 @@ public class LimeLight {
     {
         if (seekTimer.get() > 10.0 && seesTarget == 0.0)
         {
-            driveTrain.HamsterDrive.arcadeDrive(0, 0);
+            driveTrain.drive(0, 0);
             stop();
             targetFound = false;
             // led.setBoard("red");
@@ -269,7 +266,7 @@ public class LimeLight {
                 if (seesTarget == 0.0)
                 {
                     steeringPow = .35;
-                    driveTrain.HamsterDrive.arcadeDrive(0, steeringPow);
+                    driveTrain.drive(0, steeringPow);
                     // led.setBoard("blue");
                 } 
                 else 
@@ -287,13 +284,13 @@ public class LimeLight {
                             steeringPow = -.4;
                         }
 
-                        driveTrain.HamsterDrive.arcadeDrive(0, steeringPow);
+                        driveTrain.drive(0, steeringPow);
 
                     } 
                     else if ((currentX < 5 && currentX > -5) && seesTarget != 0.0)
                     {
                         //We have found the target. Stop turning.
-                        driveTrain.HamsterDrive.arcadeDrive(0, 0);
+                        driveTrain.drive(0, 0);
                         seekTimer.stop();
                         seekTimer.reset();
                         targetFound = true;
@@ -329,18 +326,13 @@ public class LimeLight {
         SmartDashboard.putNumber("TurnPowerAdjust", showTurnPower);
     }
 
-    public boolean llIsActive = false;
     public void runLimelight (DriveTrain drivetrain) 
     {
-        // if (!targetFound) 
-        // {
-        //     seekTarget(drivetrain);
-        // }
-        // else 
-        // {
-        //     // estimateDist();
-        //     getInRangeUsingDistance(drivetrain);
-        // }
         if(seekTarget(drivetrain)) getInRangeUsingDistance(drivetrain);
+    }
+
+    @Override
+    public void periodic(){
+        postValues();
     }
 }

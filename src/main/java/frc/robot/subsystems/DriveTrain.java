@@ -12,34 +12,47 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.IO;
-import frc.robot.Robot;
 
 
 public class DriveTrain extends SubsystemBase 
 {
   /** Creates a new ExampleSubsystem. */
 
-    // private Robot robot = new Robot();
-
     //create motor controller objects
-    private static CANSparkMax leftP = new CANSparkMax(2, MotorType.kBrushless);
-    private static CANSparkMax rightP = new CANSparkMax(3, MotorType.kBrushless);
-    private static CANSparkMax leftF = new CANSparkMax(4, MotorType.kBrushless);
-    private static CANSparkMax rightF = new CANSparkMax(5, MotorType.kBrushless);
+    private static CANSparkMax leftLead = new CANSparkMax(2, MotorType.kBrushless);
+    private static CANSparkMax rightLead = new CANSparkMax(3, MotorType.kBrushless);
+    private static CANSparkMax leftFollower = new CANSparkMax(4, MotorType.kBrushless);
+    private static CANSparkMax rightFollower = new CANSparkMax(5, MotorType.kBrushless);
   
     //create encoder objects
-    static RelativeEncoder leftEncoder = leftP.getEncoder();
-    static RelativeEncoder rightEncoder = rightP.getEncoder();
+    static RelativeEncoder leftEncoder = leftLead.getEncoder();
+    static RelativeEncoder rightEncoder = rightLead.getEncoder();
   
     // Create the differential drive object
-    public final DifferentialDrive HamsterDrive = new DifferentialDrive(leftP, rightP);
+    public final DifferentialDrive HamsterDrive = new DifferentialDrive(leftLead, rightLead);
 
-    double forwardPower;
-    private double stepDownSpeed;
+  public DriveTrain() {
+    // Set up the motor controller followers
+    leftFollower.follow(leftLead);
+    rightFollower.follow(rightLead);
 
-  public DriveTrain() {}
+    // Invert the right side motor controller
+    rightLead.setInverted(true);
+
+    //Disable the safety feature of the drivetrain, which can be very difficult to work around
+    HamsterDrive.setSafetyEnabled(false);
+
+    // Set deadband for the differential drive
+    HamsterDrive.setDeadband(0.1);
+
+    //Set the encoder positions to zero, effectively resetting them
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
+
+    //Set the motors to accelerate and decelerate slower
+    rightLead.setOpenLoopRampRate(0.25);
+    leftLead.setOpenLoopRampRate(0.25);
+  }
 
   //#STOPDRIVE
   //Method to stop the drive train
@@ -92,24 +105,29 @@ public class DriveTrain extends SubsystemBase
     }
   }
 
-  //#RESETDRIVE
-  //This method resets the drive train elements
-  public void resetDrive() 
+  public void reset(){
+    leftEncoder.setPosition(0.0);
+    rightEncoder.setPosition(0.0);
+  }
+  //#FACTORYRESET
+  /*This method doesn't entirely factory reset the motors.
+    We simply reassign the followers and invert the motors again.
+   * 
+  */
+  public void factoryReset() 
   {
-
     // Reset the factory defaults for the motor controllers
-    leftP.restoreFactoryDefaults();
-    rightP.restoreFactoryDefaults();
-    leftF.restoreFactoryDefaults();
-    rightF.restoreFactoryDefaults(); 
+    leftLead.restoreFactoryDefaults();
+    rightLead.restoreFactoryDefaults();
+    leftLead.restoreFactoryDefaults();
+    rightLead.restoreFactoryDefaults(); 
 
     // Set up the motor controller followers
-    leftF.follow(leftP);
-    rightF.follow(rightP);
+    leftFollower.follow(leftLead);
+    rightFollower.follow(rightLead);
 
-    
     // Invert the right side motor controller
-    rightP.setInverted(true);
+    rightLead.setInverted(true);
 
     //Disable the safety feature of the drivetrain, which can be very difficult to work around
     HamsterDrive.setSafetyEnabled(false);
@@ -122,8 +140,8 @@ public class DriveTrain extends SubsystemBase
     rightEncoder.setPosition(0);
 
     //Set the motors to accelerate and decelerate slower
-    rightP.setOpenLoopRampRate(0.25);
-    leftP.setOpenLoopRampRate(0.25);
+    rightLead.setOpenLoopRampRate(0.25);
+    leftLead.setOpenLoopRampRate(0.25);
   }
 
 
@@ -135,7 +153,7 @@ public class DriveTrain extends SubsystemBase
       static double leftDistance = 0;
 
       //#ENCODERMATH
-      //This fucntion handles all of the math and data necessary to use the encoders
+      //This function handles all of the math and data necessary to use the encoders
       public static void encoderMath() 
       {
         //All the math to convert encoder rotations to horizontal distance in inches
@@ -145,64 +163,31 @@ public class DriveTrain extends SubsystemBase
         rightDistance = rightWheelRotations * 18;
         leftDistance = leftWheelRotations * 18;
 
-        // Displays the Left and Right encoder rates on the dashboard with the specified names
-        SmartDashboard.putNumber("Left Encoder Distance", leftDistance);
-        SmartDashboard.putNumber("Right Encoder Distance", rightDistance);
       }
 
 
 
       //#DRIVE
       //This method determines what to do with the motors based on the controller input
-      public void drive() 
+      public void drive(double forwardPow, double turnPow) 
       {
-        // Get the value of the Y-Axis on the joystick
-        double forward = IO.dController.getLeftY();
-
-        // Adjust Speed/Power so that it will always be at a max of 80%
-        double change = 0;
-
-        if (forward < 0) change = 0.2;
-        if (forward > 0) change = -0.2;
-
-        forwardPower = forward + change;
-
-        // Set turn to the value of the X-Axis on the joystick
-        double turn = IO.dController.getRightX();
-
-        // Reduce Turn Power
-        double turnPower = turn *= 1;
-
-        // Drive the Robot with <forwardPower> and <turnPower>
-        if (IO.dController.getRightX() > 0.1 || IO.dController.getRightX() < -0.1 || IO.dController.getLeftY() > 0.1 || IO.dController.getLeftY() < -0.1) 
-        {
-        HamsterDrive.arcadeDrive(forwardPower, -turnPower);
-        } 
-        else if (IO.dController.getLeftY() > -0.1 && IO.dController.getLeftY() < 0.1 && IO.dController.getRightX() < 0.1 && IO.dController.getRightX() > -0.1) 
-        {
-        stopDrive();
-        }
+        //If the values are less than a certain point 
+        // if (Math.abs(forwardPow) < .1) forwardPow = 0.0;
+        // if (Math.abs(turnPow) < .1) turnPow = 0.0;
+        //Move the robot.
+        HamsterDrive.arcadeDrive(forwardPow, turnPow, true);
       }
 
-
-
-      private Timer stepDownTime = new Timer();
-
-      //#STEPDOWNDRIVE
-      //This method will halve the speed of the drivetrain for half a second before stopping it entirely; 
-      //Acts as a buffer to stop the robot fron lifting off the ground
-      private void stepDownDrive() 
-      {
-        stepDownTime.reset();
-        stepDownTime.start();
-
-        if (stepDownTime.get() <= 0.5) 
-        {
-          HamsterDrive.arcadeDrive(forwardPower/2, 0, false);
-        }
-        else if (stepDownTime.get() > 0.5) 
-        {
-          stopDrive();
-        }
+      public void log(){
+        // Displays the Left and Right encoder rates on the dashboard with the specified names
+        SmartDashboard.putNumber("Left Encoder Distance", leftDistance);
+        SmartDashboard.putNumber("Right Encoder Distance", rightDistance);
       }
+
+      @Override
+      public void periodic(){
+        encoderMath();
+        log();
+      }
+
 }
