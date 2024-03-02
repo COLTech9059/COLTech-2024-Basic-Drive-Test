@@ -10,7 +10,7 @@ import frc.robot.IO;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Manipulator 
+public class Manipulator extends SubsystemBase
 {
     
     //Create the LED class object
