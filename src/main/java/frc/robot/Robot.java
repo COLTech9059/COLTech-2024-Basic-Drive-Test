@@ -21,14 +21,17 @@ import java.util.function.DoubleSupplier;
  * project.
  */
 public class Robot extends TimedRobot {
+  //Autonomous command????
   private Command m_autonomousCommand;
-
+  //Objects to be used in various robot functions.
   private DriveTrain drivetrain = new DriveTrain();
   private LimeLight limelight = new LimeLight();
   private Manipulator manipulator = new Manipulator();
-  private DoubleSupplier forward;
-  private DoubleSupplier turn;
+  //Set up DriveCommand and its DoubleSuppliers.
+  private DoubleSupplier forward = () -> IO.dController.getLeftY();
+  private DoubleSupplier turn = () -> IO.dController.getRightX();
   private DriveCommand dCommand = new DriveCommand(drivetrain, forward, turn);
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -66,6 +69,7 @@ public class Robot extends TimedRobot {
     manipulator.initializeManipulator();
     dCommand.cancel();
     drivetrain.resetDrive();
+    limelight.stop();
   }
 
   @Override
@@ -74,8 +78,6 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -100,10 +102,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    dCommand.schedule();
 
-    // dCommand.schedule();
-
-
+    limelight.stop();
     driveTime.stop();
     driveTime.reset();
     driveTime.start();
@@ -112,11 +113,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    drivetrain.drive();
+    // drivetrain.drive();
     manipulator.controlManipulator();
-
-    forward = () -> IO.dController.getLeftY();
-    turn = () -> IO.dController.getRightX();
   }
 
   @Override

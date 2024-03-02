@@ -25,28 +25,9 @@ public class DriveCommand extends Command
     }
 
     @Override
-    public void initialize()
-    {
-
-    }
-
-
-    @Override
     public void execute()
     {
         drivetrain.HamsterDrive.arcadeDrive(forward.getAsDouble(), turn.getAsDouble(), true);
-    }
-
-    @Override
-    public boolean isFinished() 
-    {
-        return false;
-    }
-    
-    @Override
-    public void end(boolean interrupted)
-    {
-        
     }
 
 }

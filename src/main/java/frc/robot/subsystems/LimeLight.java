@@ -17,13 +17,13 @@ public class LimeLight {
     private NetworkTableEntry ta = nTable.getEntry("ta");
     private NetworkTableEntry tv = nTable.getEntry("tv");
     private NetworkTableEntry tid = nTable.getEntry("tid");
-
+    //Values posted by the limelight.
     private double currentX; // X value is horizontal angle from center of LL camera
     private double currentY; // Y value is vertical angle from center of LL camera
     private double currentArea; // Unknown what this does currently.
     private double seesTarget; //Double value (only 1 or 0) that tells the program if it sees the target.
     private double curTargetID; //Double value designating the current visible AprilTag.
-
+    //Values for posting to Shuffleboard
     private double estimDist = 0.0;
     private double showTurnPower = 0.0;
 
@@ -42,19 +42,16 @@ public class LimeLight {
     private final double[] heightArray = {50.125, 53.88, 0.0, 0.0, 0.0, 0.0, 50.125, 53.88};
 
     //CONSTANTS
-
-        //Physical distance of limelight LENS from ground (measured in INCHES)
-        private final double LensDistFromGround = 9.75;
-        //Physical vertical angle of lens from mount (measured in DEGREES).
-        private final double LensAngleFromMount = 22.0;
-        //Physical height of chosen AprilTag.
-        //If needed, create a table that holds the AprilTag IDs and its height from the ground.
-        // private final double targetHeight = 53.88;
-        //Correction modifier. I assume it designates how much of a correction you want.
-        private final double correctionMod = -.1;
-        //Preset distance from target.
-        //Could put it in an array and designate it to an AprilTag.
-        private final double desiredDist = 36.25;
+    //Physical distance of limelight LENS from ground (measured in INCHES)
+    private final double LensDistFromGround = 9.75;
+    //Physical vertical angle of lens from mount (measured in DEGREES).
+    private final double LensAngleFromMount = 22.0;
+    //Physical height of chosen AprilTag.;
+    //Correction modifier. I assume it designates how much of a correction you want.
+    private final double correctionMod = -.1;
+    //Preset distance from target.
+    //Could put it in an array and designate it to an AprilTag.
+    private final double desiredDist = 36.25;
 
     //#LIMELIGHT
     /* Constructor. Assigns values to the coordinate variables above.
@@ -251,7 +248,7 @@ public class LimeLight {
      * On the robot seeing it, centers on the target with a .5 degree range of error.
      * Unknown which way the directions are.
      */
-    private double steeringPow = .4;
+    private double steeringPow = .35;
 
     public boolean seekTarget(DriveTrain driveTrain)
     {
@@ -271,7 +268,7 @@ public class LimeLight {
             //If target isn't in view, set steeringPow to be a consistent .3. 
                 if (seesTarget == 0.0)
                 {
-                    steeringPow = .4;
+                    steeringPow = .35;
                     driveTrain.HamsterDrive.arcadeDrive(0, steeringPow);
                     // led.setBoard("blue");
                 } 
@@ -283,11 +280,11 @@ public class LimeLight {
                     {
                         if (currentX > 0.0) 
                         {
-                            steeringPow = -.4;
+                            steeringPow = .4;
                         }
                         else if (currentX < 0.0) 
                         {
-                            steeringPow = .4;
+                            steeringPow = -.4;
                         }
 
                         driveTrain.HamsterDrive.arcadeDrive(0, steeringPow);
