@@ -88,6 +88,10 @@ public class Manipulator
 
     //#INTAKEPOSITION
     //This method will run the manipulator base motors until the magnetic sensor is triggered at the amp spitting position
+    /*
+     * @Param timeout               The time limit for the method
+     * @Return didIntakePosition    Returns true if successfully positioned, and false if not
+     */
     public boolean intakePosition(double timeout) 
     {
         posTimer.reset();
@@ -140,6 +144,10 @@ public class Manipulator
 
     //#SHOOTPOSITION
     //This method will bring the manipulator to a position for it to shoot from
+    /*
+     * @Param timeout            The time limit for the method
+     * @Return didShootPosition  Returns true if successfully positioned, returns false if not
+     */
     public boolean shootPosition(double timeout) 
     {
         shootPosTime.reset();
@@ -177,6 +185,10 @@ public class Manipulator
 
     //#AMPPOSITION
     //This method will bring the manipulator to a position for it to score in the amp
+    /*
+     * @Param timeout           The time limit for the method
+     * @Return didAmpPosition   Returns true if positioned successfully, returns false if not
+     */
     public boolean ampPosition(double timeout) 
     {
         ampPosTime.reset();
@@ -227,6 +239,9 @@ public class Manipulator
 
         //#INTAKE
         //This method will intake a note
+        /*
+         * @Param timeout   The time limit of the method
+         */
         public void intake(double timeout) 
         {
             intakeTime.reset();
@@ -290,6 +305,9 @@ public class Manipulator
 
         //#SHOOTNOTE
         //This method will shoot a note
+        /*
+         * @Param timeout   The time limit of the method
+         */
         public void shootNote(double timeout) 
         {
 
@@ -340,6 +358,9 @@ public class Manipulator
 
         //#AMPSCORE
         //This method will score a note in the amp
+        /*
+         * @Param timeout   The time limit of the method
+         */
         public void ampScore(double timeout) 
         {
 
@@ -380,6 +401,9 @@ public class Manipulator
 
         //#MOVEMANIPULATOR
         //This method will move the manipulator forward
+        /*
+         * @Param isNegative    Determines if the arm will move in a negative direction or not
+         */
         public void moveManipulator(boolean isNegative) 
         {
             if (!isNegative) 
@@ -394,7 +418,13 @@ public class Manipulator
 
         //#MOVEMANIPULATOR
         //This method will move the manipulator forward by a set time
-        public void moveManipulator(double moveTime, boolean isNegative) 
+        /*
+         * @Param moveTime              The time for which the manipulator will move
+         * @Param isNegative            Determines whether the robot will move in a positive or negative direction
+         * @Return didMoveManipulator   Returns true when finished moving
+         */
+        private boolean didMoveManipulator = false;
+        public boolean moveManipulator(double moveTime, boolean isNegative) 
         {
             Timer moveTimer = new Timer();
             moveTimer.reset();
@@ -409,6 +439,7 @@ public class Manipulator
                 else 
                 {
                 rightBaseMotor.set(0);
+                didMoveManipulator = true;
                 }
             } 
             else   
@@ -423,16 +454,21 @@ public class Manipulator
                 } else 
                 {
                 rightBaseMotor.set(0);
+                didMoveManipulator = true;
                 }
             }
+            return didMoveManipulator;
         }
 
 
         //#RAMPUPMANIPULATOR
         //This method will increase the movement speed of the manipulator as the trigger is held more
+        /*
+         * @Param power The speed at which the manipulator will move (designed for use with XboxController triggers)
+         */
         public void rampUpManipulator(double power) 
         {
-            power *= 1;
+            power *= 0.90;
             rightBaseMotor.set(power);
         }
 
@@ -518,6 +554,13 @@ public class Manipulator
 
         //#AUTOMANIPULATOR
         //This method will do all of the actions for our manipulator during auto
+        /*
+         * @Param doesIntake        If true, then the manipulator will go to the intake position and intake a note
+         * @Param doesAim           If true, then the manipulator will go to the shooting position
+         * @Param doesShoot         If true, then the manipulator will shoot a note
+         * @Param doesAmpAim        If true, then the manipulator will go to the amp position
+         * @Param doesAmp           If true, then the manipulator will score in the amp
+         */
         public void autoManipulator(boolean doesIntake, boolean doesAim, boolean doesShoot, boolean doesAmpAim, boolean doesAmp) 
         {
             if (doesIntake) 
