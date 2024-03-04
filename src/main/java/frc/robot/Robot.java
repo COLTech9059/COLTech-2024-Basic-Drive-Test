@@ -124,6 +124,8 @@ public class Robot extends TimedRobot {
     limelight.start();
 
     dropTime.start();
+
+    segmentFinished = false;
   }
 
   private Timer dropTime = new Timer();
@@ -132,7 +134,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     // limelight.runLimelight(drivetrain);
     
-    autoSegment(1);
+    if (autoSegment(1)) autoSegment(2);
 
     // if (manipulator.intakePosition(5))
     // {
