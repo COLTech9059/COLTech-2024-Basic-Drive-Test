@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   //Objects to be used in various robot functions.
   // private DriveTrain drivetrain = new DriveTrain();
   // private LimeLight limelight = new LimeLight();
-  private Manipulator manipulator = new Manipulator();
+  // private Manipulator manipulator = new Manipulator();
   //Set up DriveCommand and its DoubleSuppliers.
   // private DoubleSupplier forward = () -> IO.dController.getLeftY();
   // private DoubleSupplier turn = () -> IO.dController.getRightX();
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     // drivetrain.factoryReset();
-    manipulator.initializeManipulator();
+    // manipulator.initializeManipulator();
 
     m_RobotContainer = new RobotContainer();
   }
@@ -62,13 +62,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    manipulator.manipulatorDashboard();
+    // manipulator.manipulatorDashboard();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    manipulator.initializeManipulator();
+    // manipulator.initializeManipulator();
     // dCommand.cancel();
     // drivetrain.reset();
     // limelight.stop();
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // drivetrain.drive();
-    manipulator.controlManipulator();
+    // manipulator.controlManipulator();
   }
 
   @Override

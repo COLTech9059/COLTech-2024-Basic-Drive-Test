@@ -384,6 +384,22 @@ public class Manipulator extends SubsystemBase
             }   
         }
 
+        public void moveArm(double ArmPower){
+            rightBaseMotor.set(ArmPower);
+        }
+        public void shootNote(boolean isActive){
+            if (isActive) ampMotor.set(-.5);
+            else ampMotor.set(0);
+        }
+        public void runIntake(boolean isReverse, boolean isActive){
+            if (!isReverse && isActive) intakeMotor.set(.4);
+            else if (!isReverse && ! isActive) intakeMotor.set(0);
+        }
+        public void reverseIntake(boolean runningIntake, boolean isActive){
+            if (!runningIntake && isActive) intakeMotor.set(-.2);
+            else if (!runningIntake && !isActive) intakeMotor.set(0);
+        }
+
         //#MOVEMANIPULATOR
         //This method will move the manipulator forward by a set time
         public void moveManipulator(double moveTime, boolean isNegative) 

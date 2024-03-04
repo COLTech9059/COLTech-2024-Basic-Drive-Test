@@ -134,7 +134,7 @@ public class DriveTrain extends SubsystemBase
 
   //#DRIVE
   //This method determines what to do with the motors based on the controller input
-  public void drive(double forwardPow, double turnPow, boolean usingController) 
+  public void drive(double forwardPow, double turnPow) 
   {
     //If the values are less than a certain point 
     // if (Math.abs(forwardPow) < .1) forwardPow = 0.0;

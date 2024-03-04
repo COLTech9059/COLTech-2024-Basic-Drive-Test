@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj.XboxController;
 // import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-    //Subsy stem declarations.
+    //Subsystem declarations.
     private final DriveTrain m_DriveTrain = new DriveTrain();
     private final LimeLight m_LimeLight = new LimeLight();
-    // private final Manipulator m_Manipulator = new Manipulator();
+    private final Manipulator m_Manipulator = new Manipulator();
     //Setup Controller.
     private final XboxController xbContMovement = new XboxController(0);
     private final XboxController xbContArm = new XboxController(1);
@@ -18,7 +18,27 @@ public class RobotContainer {
     private final Command m_autonomousCommand = new Autonomous(m_DriveTrain, m_LimeLight);
 
     public RobotContainer(){
-        m_DriveTrain.setDefaultCommand(new DriveCommand(m_DriveTrain, () -> xbContMovement.getLeftY(), () -> xbContMovement.getRightX()));
+        m_DriveTrain.setDefaultCommand
+        (
+            new DriveCommand
+            (
+                m_DriveTrain, 
+                () -> xbContMovement.getLeftY(), 
+                () -> xbContMovement.getRightX()
+            )
+        );
+
+        m_Manipulator.setDefaultCommand
+        (
+            new ArmCommand
+            (
+                m_Manipulator, 
+                () -> (xbContMovement.getRightTriggerAxis() - xbContMovement.getLeftTriggerAxis()), 
+                () -> xbContMovement.getRightBumper(), 
+                () -> xbContMovement.getLeftBumper(),
+                () -> xbContMovement.getAButton()
+             )
+        );
         //Future possible commands here.
 
         configureButtons();
