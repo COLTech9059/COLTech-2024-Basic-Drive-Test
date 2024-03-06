@@ -140,7 +140,7 @@ public class DriveTrain extends SubsystemBase
     // if (Math.abs(forwardPow) < .1) forwardPow = 0.0;
     // if (Math.abs(turnPow) < .1) turnPow = 0.0;
     //Move the robot.
-    HamsterDrive.arcadeDrive(forwardPow, turnPow, true);
+    HamsterDrive.arcadeDrive(forwardPow *.9, turnPow *-.8, false);
   }
 
   public void log(){

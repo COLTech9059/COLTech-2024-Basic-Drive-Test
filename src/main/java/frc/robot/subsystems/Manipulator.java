@@ -364,40 +364,44 @@ public class Manipulator extends SubsystemBase
 
         //#AMPSCORE
         //This method will score in the amp manually
-        public void ampScore() 
+        public void ampScore(boolean isActive) 
         {
-            ampMotor.set(-0.3);
-        }
-
-
-        //#MOVEMANIPULATOR
-        //This method will move the manipulator forward
-        public void moveManipulator(boolean isNegative) 
-        {
-            if (!isNegative) 
-            {   
-                rightBaseMotor.set(-0.3);
-            } 
-            else 
+            if (isActive)
             {
-                rightBaseMotor.set(0.3);
-            }   
+                ampMotor.set(-0.3);
+            }
+            if (!isActive)
+            {
+                ampMotor.set(0);
+            }
         }
+
+
+        // //#MOVEMANIPULATOR
+        // //This method will move the manipulator forward
+        // public void moveManipulator(boolean isNegative) 
+        // {
+        //     if (!isNegative) 
+        //     {   
+        //         rightBaseMotor.set(-0.3);
+        //     } 
+        //     else 
+        //     {
+        //         rightBaseMotor.set(0.3);
+        //     }   
+        // }
 
         public void moveArm(double ArmPower){
-            rightBaseMotor.set(ArmPower);
+            rightBaseMotor.set(-ArmPower);
         }
         public void shootNote(boolean isActive){
-            if (isActive) ampMotor.set(-.5);
+            if (isActive) ampMotor.set(.5);
             else ampMotor.set(0);
         }
         public void runIntake(boolean isReverse, boolean isActive){
-            if (!isReverse && isActive) intakeMotor.set(.4);
-            else if (!isReverse && ! isActive) intakeMotor.set(0);
-        }
-        public void reverseIntake(boolean runningIntake, boolean isActive){
-            if (!runningIntake && isActive) intakeMotor.set(-.2);
-            else if (!runningIntake && !isActive) intakeMotor.set(0);
+            if (!isReverse && isActive) intakeMotor.set(-.4);
+            else if (isReverse && !isActive) intakeMotor.set(.2);
+            else intakeMotor.set(0);
         }
 
         //#MOVEMANIPULATOR
@@ -496,7 +500,7 @@ public class Manipulator extends SubsystemBase
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
                 // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
-                if (IO.dController.getBButton()) ampScore();
+                // if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
                 if (IO.oController.getYButton()) intakePosition(5);
                 if (IO.oController.getXButton()) shootPosition();
@@ -518,7 +522,7 @@ public class Manipulator extends SubsystemBase
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
                 // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
-                if (IO.dController.getBButton()) ampScore();
+                // if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
                 if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
             }

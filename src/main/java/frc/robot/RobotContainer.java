@@ -17,7 +17,8 @@ public class RobotContainer {
     //Autonomous Command.
     private final Command m_autonomousCommand = new Autonomous(m_DriveTrain, m_LimeLight);
 
-    public RobotContainer(){
+    public RobotContainer()
+    {
         m_DriveTrain.setDefaultCommand
         (
             new DriveCommand
@@ -44,12 +45,14 @@ public class RobotContainer {
         configureButtons();
     }
 
-    private void configureButtons(){
+    private void configureButtons()
+    {
         
     }
 
     //For getting the autonomous command.
-    public Command getAutoCommand(){
+    public Command getAutoCommand()
+    {
         return m_autonomousCommand;
     }
 }
