@@ -8,12 +8,20 @@ import java.util.function.BooleanSupplier;
 public class ArmCommand extends Command {
 
     private final Manipulator m_Manipulator;
+
+    //Drive controller related objects
     private final DoubleSupplier ArmPower;
     private final BooleanSupplier shootEnabled;
     private final BooleanSupplier intakeActive;
     private final BooleanSupplier canReverseIntake;
+    private final BooleanSupplier ampActive;
 
-    public ArmCommand(Manipulator sentManip, DoubleSupplier armPower, BooleanSupplier shootActive, BooleanSupplier intakeActive, BooleanSupplier canReverseIntake){
+    //Operator controller
+    private final BooleanSupplier holdManipulator;
+    private final BooleanSupplier intakePosition;
+
+    public ArmCommand(Manipulator sentManip, DoubleSupplier armPower, BooleanSupplier shootActive, BooleanSupplier intakeActive, BooleanSupplier canReverseIntake, BooleanSupplier ampActive, BooleanSupplier holdManipulator, BooleanSupplier intakePosition)
+    {
         //Initialize DoubleSuppliers and the Manipulator.
         m_Manipulator = sentManip;
         //For Evan: we can use a singular armPower variable to make things simpler
@@ -22,6 +30,9 @@ public class ArmCommand extends Command {
         shootEnabled = shootActive;
         this.intakeActive = intakeActive;
         this.canReverseIntake = canReverseIntake;
+        this.ampActive = ampActive;
+        this.holdManipulator = holdManipulator;
+        this.intakePosition = intakePosition;
 
         addRequirements(m_Manipulator);
     }
@@ -32,6 +43,8 @@ public class ArmCommand extends Command {
         m_Manipulator.moveArm(ArmPower.getAsDouble());
         m_Manipulator.shootNote(shootEnabled.getAsBoolean());
         m_Manipulator.runIntake(canReverseIntake.getAsBoolean(), intakeActive.getAsBoolean());
-        // m_Manipulator.
+        m_Manipulator.ampScore(ampActive.getAsBoolean());
+        m_Manipulator.holdManipulator(holdManipulator.getAsBoolean());
+        m_Manipulator.intakePosition(5, intakePosition.getAsBoolean());
     }
 }

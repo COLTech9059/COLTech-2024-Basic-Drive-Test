@@ -37,7 +37,10 @@ public class RobotContainer {
                 () -> (xbContMovement.getRightTriggerAxis() - xbContMovement.getLeftTriggerAxis()), 
                 () -> xbContMovement.getRightBumper(), 
                 () -> xbContMovement.getLeftBumper(),
-                () -> xbContMovement.getAButton()
+                () -> xbContMovement.getAButton(),
+                () -> xbContMovement.getBButton(),
+                () -> xbContArm.getAButton(),
+                () -> xbContArm.getYButton()
              )
         );
         //Future possible commands here.

@@ -85,34 +85,41 @@ public class Manipulator extends SubsystemBase
 
     //#INTAKEPOSITION
     //This method will run the manipulator base motors until the magnetic sensor is triggered at the amp spitting position
-    public void intakePosition(double timeout) 
+    public void intakePosition(double timeout, boolean isMoving) 
     {
         posTimer.reset();
         posTimer.start();
 
-        if (posTimer.get() <= timeout) 
+        if (isMoving)
         {
-            if (intakeSensor.get()) 
+            if (posTimer.get() <= timeout) 
             {
-            rightBaseMotor.set(0.3);
+                if (intakeSensor.get()) 
+                {
+                rightBaseMotor.set(0.3);
+                } 
+                else if (!intakeSensor.get()) 
+                {
+                rightBaseMotor.set(0);
+                rightBaseEncoder.setPosition(0);
+                leftBaseEncoder.setPosition(0);
+
+                didIntakePosition = true;
+                // led.setBoard("green");
+                posTimer.stop();
+                posTimer.reset();
+                }
             } 
-            else if (!intakeSensor.get()) 
+            else 
             {
             rightBaseMotor.set(0);
-            rightBaseEncoder.setPosition(0);
-            leftBaseEncoder.setPosition(0);
-
-            didIntakePosition = true;
-            // led.setBoard("green");
-            posTimer.stop();
-            posTimer.reset();
+            didIntakePosition = false;
+            // led.setBoard("red");
             }
-        } 
-        else 
+        }
+        else
         {
-        rightBaseMotor.set(0);
-        didIntakePosition = false;
-        // led.setBoard("red");
+            rightBaseMotor.set(0);
         }
     }
 
@@ -463,7 +470,7 @@ public class Manipulator extends SubsystemBase
 
         //#HOLDMANIPULATOR
         //This method will try to hold the manipulator in one spot
-        public void holdManipulator() 
+        public void holdManipulator(boolean isHolding) 
         {
             
             if (!setPos) 
@@ -472,13 +479,22 @@ public class Manipulator extends SubsystemBase
                 setPos = true;
             }
 
-            if (rightBaseEncoder.getPosition() > holdPos + 1.5)
+            if (isHolding)
             {
+            
+                if (rightBaseEncoder.getPosition() > holdPos + 1.5)
+                {
                 rightBaseMotor.set(-0.1);
-            }
-            if (rightBaseEncoder.getPosition() < holdPos - 1.5)
-            {
+                }
+                if (rightBaseEncoder.getPosition() < holdPos - 1.5)
+                {
                 rightBaseMotor.set(0.1);
+                }
+            }
+            else
+            {
+                rightBaseMotor.set(0);
+                setPos = false;
             }
         }
 
@@ -494,7 +510,7 @@ public class Manipulator extends SubsystemBase
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
                 if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( !IO.oController.getYButton() && !IO.oController.getXButton() && (( IO.oController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 ))) stopManipulator();
-                if (IO.oController.getAButton()) holdManipulator();
+                // if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
                 if (IO.dController.getLeftBumper()) intake();
@@ -502,7 +518,7 @@ public class Manipulator extends SubsystemBase
                 // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
                 // if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
-                if (IO.oController.getYButton()) intakePosition(5);
+                // if (IO.oController.getYButton()) intakePosition(5);
                 if (IO.oController.getXButton()) shootPosition();
                 if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
                 // if (IO.oController.getBButton()) 
@@ -516,7 +532,7 @@ public class Manipulator extends SubsystemBase
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
                 if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if (( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
-                if (IO.oController.getAButton()) holdManipulator();
+                // if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
                 if (IO.dController.getLeftBumper()) intake();
