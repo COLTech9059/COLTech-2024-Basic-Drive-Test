@@ -37,7 +37,6 @@ public class DriveTrain extends SubsystemBase
     public final DifferentialDrive HamsterDrive = new DifferentialDrive(leftP, rightP);
 
     double forwardPower;
-    private double stepDownSpeed;
 
   public DriveTrain() {}
 
@@ -45,7 +44,7 @@ public class DriveTrain extends SubsystemBase
   //Method to stop the drive train
   public void stopDrive() 
   {
-    HamsterDrive.stopMotor();
+    HamsterDrive.arcadeDrive(0, 0, false);
   }
 
 
@@ -176,7 +175,7 @@ public class DriveTrain extends SubsystemBase
         {
         HamsterDrive.arcadeDrive(forwardPower, -turnPower);
         } 
-        else if (IO.dController.getLeftY() > -0.1 && IO.dController.getLeftY() < 0.1 && IO.dController.getRightX() < 0.1 && IO.dController.getRightX() > -0.1) 
+        else if ( (IO.dController.getLeftY() > -0.1 && IO.dController.getLeftY() < 0.1) && (IO.dController.getRightX() < 0.1 && IO.dController.getRightX() > -0.1) ) 
         {
         stopDrive();
         }

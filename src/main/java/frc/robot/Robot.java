@@ -105,6 +105,10 @@ public class Robot extends TimedRobot {
       manipulator.autoManipulator(false, true, true, false, false);
       segmentFinished = true;
     }
+    if (ID == 3)
+    {
+      
+    }
     return segmentFinished;
   }
 
