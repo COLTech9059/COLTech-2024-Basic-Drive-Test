@@ -19,8 +19,10 @@ public class ArmCommand extends Command {
     //Operator controller
     private final BooleanSupplier holdManipulator;
     private final BooleanSupplier intakePosition;
+    private final BooleanSupplier ampPosition;
+    private final BooleanSupplier shootPosition;
 
-    public ArmCommand(Manipulator sentManip, DoubleSupplier armPower, BooleanSupplier shootActive, BooleanSupplier intakeActive, BooleanSupplier canReverseIntake, BooleanSupplier ampActive, BooleanSupplier holdManipulator, BooleanSupplier intakePosition)
+    public ArmCommand(Manipulator sentManip, DoubleSupplier armPower, BooleanSupplier shootActive, BooleanSupplier intakeActive, BooleanSupplier canReverseIntake, BooleanSupplier ampActive, BooleanSupplier holdManipulator, BooleanSupplier intakePosition, BooleanSupplier ampPosition, BooleanSupplier shootPosition)
     {
         //Initialize DoubleSuppliers and the Manipulator.
         m_Manipulator = sentManip;
@@ -33,6 +35,8 @@ public class ArmCommand extends Command {
         this.ampActive = ampActive;
         this.holdManipulator = holdManipulator;
         this.intakePosition = intakePosition;
+        this.ampPosition = ampPosition;
+        this.shootPosition = shootPosition;
 
         addRequirements(m_Manipulator);
     }
@@ -46,5 +50,6 @@ public class ArmCommand extends Command {
         m_Manipulator.ampScore(ampActive.getAsBoolean());
         m_Manipulator.holdManipulator(holdManipulator.getAsBoolean());
         m_Manipulator.intakePosition(5, intakePosition.getAsBoolean());
+
     }
 }

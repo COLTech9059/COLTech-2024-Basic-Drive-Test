@@ -38,11 +38,11 @@ public class LimeLight extends SubsystemBase {
 
     //HEIGHTS                                     ID 1   ID 2 ID 3 ID 4 ID 5 ID 6    ID 7 
     //ID #s are the number minus 1.
-    private final double[] heightArray = {50.125, 53.88, 0.0, 0.0, 0.0, 0.0, 50.125, 53.88};
+    private final double[] heightArray = {50.125,50.125,53.88, 0.0, 0.0, 0.0, 0.0, 50.125, 53.88};
 
     //CONSTANTS
     //Physical distance of limelight LENS from ground (measured in INCHES)
-    private final double LensDistFromGround = 9.75;
+    private final double LensDistFromGround = 8.5;
     //Physical vertical angle of lens from mount (measured in DEGREES).
     private final double LensAngleFromMount = 22.0;
     //Physical height of chosen AprilTag.;
@@ -53,7 +53,7 @@ public class LimeLight extends SubsystemBase {
     private final double desiredDist = 36.25;
 
     //#LIMELIGHT
-    /* Constructor. Assigns values to the coordinate variables above.
+    /* Constructor. Assigns values to the coordinate variables a%bove.
     */
     public LimeLight()
     {

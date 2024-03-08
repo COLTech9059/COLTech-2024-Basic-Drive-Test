@@ -13,6 +13,7 @@ public class LimeLightCommand extends Command{
         limelight = newLime;
         drivetrain = newDrive;
         addRequirements(limelight, drivetrain);
+        limelight.start();
     }
     //# EXECUTE
     /* Overrides the execute function to constantly drive the robot given inputs.
