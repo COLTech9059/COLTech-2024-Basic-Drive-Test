@@ -10,7 +10,7 @@ import frc.robot.IO;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Manipulator 
+public class Manipulator extends SubsystemBase
 {
     
     //Create the LED class object
@@ -115,34 +115,41 @@ public class Manipulator
      * @Param timeout               The time limit for the method
      * @Return didIntakePosition    Returns true if successfully positioned, and false if not
      */
-    public boolean intakePosition(double timeout) 
+    
+    public boolean intakePosition(double timeout, boolean isMoving) 
     {
         posTimer.reset();
         posTimer.start();
 
-        if (posTimer.get() <= timeout) 
+        if (isMoving)
         {
-            if (frontSensor.get()) 
+            if (posTimer.get() <= timeout) 
             {
-            rightBaseMotor.set(0.3);
+                if (intakeSensor.get()) 
+                {
+                rightBaseMotor.set(0.3);
+                } 
+                else if (!intakeSensor.get()) 
+                {
+                rightBaseMotor.set(0);
+                rightBaseEncoder.setPosition(0);
+
+                didIntakePosition = true;
+                // led.setBoard("green");
+                posTimer.stop();
+                posTimer.reset();
+                }
             } 
-            else if (!frontSensor.get()) 
+            else 
             {
             rightBaseMotor.set(0);
-            rightBaseEncoder.setPosition(0);
-            // leftBaseEncoder.setPosition(0);
-
-            didIntakePosition = true;
-            // led.setBoard("green");
-            posTimer.stop();
-            posTimer.reset();
+            didIntakePosition = false;
+            // led.setBoard("red");
             }
-        } 
-        else 
+        }
+        else
         {
-        rightBaseMotor.set(0);
-        didIntakePosition = false;
-        // led.setBoard("red");
+            rightBaseMotor.set(0);
         }
         return didIntakePosition;
     }
@@ -212,29 +219,36 @@ public class Manipulator
      * @Param timeout           The time limit for the method
      * @Return didAmpPosition   Returns true if positioned successfully, returns false if not
      */
-    public boolean ampPosition(double timeout) 
+    public boolean ampPosition(double timeout, boolean isActive) 
     {
         ampPosTime.reset();
         ampPosTime.start();
 
-        if (ampPosTime.get() <= timeout) 
+        if (isActive)
         {
-            if (rightBaseEncoder.getPosition() <= Constants.ampPosition + 1) 
+            if (ampPosTime.get() <= timeout) 
             {
-            rightBaseMotor.set(-0.3);
+                if (rightBaseEncoder.getPosition() <= Constants.ampPosition + 1) 
+                {
+                    rightBaseMotor.set(-0.3);
+                } 
+                else 
+                {
+                    rightBaseMotor.set(0);
+                    didAmpPosition = true;
+                    // led.setBoard("green");
+                }
             } 
             else 
             {
-            rightBaseMotor.set(0);
-            didAmpPosition = true;
-            // led.setBoard("green");
+                rightBaseMotor.set(0);
+                didAmpPosition = false;
+                // led.setBoard("red");
             }
-        } 
-        else 
+        }
+        else
         {
-        rightBaseMotor.set(0);
-        didAmpPosition = false;
-        // led.setBoard("red");
+            rightBaseMotor.set(0);
         }
         return didAmpPosition;
     }
@@ -255,7 +269,18 @@ public class Manipulator
             SmartDashboard.putNumber("Manipulator Base Encoder", rightBaseEncoder.getPosition());
         }
 
-
+        public void moveArm(double ArmPower){
+            rightBaseMotor.set(-ArmPower);
+        }
+        public void shootNote(boolean isActive){
+            if (isActive) ampMotor.set(.5);
+            else ampMotor.set(0);
+        }
+        public void runIntake(boolean isReverse, boolean isActive){
+            if (!isReverse && isActive) intakeMotor.set(-.4);
+            else if (isReverse && !isActive) intakeMotor.set(.2);
+            else intakeMotor.set(0);
+        }
 
         public static boolean didIntake = false;
         private static Timer intakeTime = new Timer();
@@ -522,33 +547,38 @@ public class Manipulator
         }
 
         
-            boolean setPos = false;
-            double holdPos = 0;
+        boolean setPos = false;
+        double holdPos = 0;
 
-        //#HOLDMANIPULATOR
-        //This method will try to hold the manipulator in one spot
-        public void holdManipulator() 
+    //#HOLDMANIPULATOR
+    //This method will try to hold the manipulator in one spot
+    public void holdManipulator(boolean isHolding) 
+    {
+        
+        if (!setPos) 
         {
-            
-            if (!setPos) 
-            {
-                holdPos = rightBaseEncoder.getPosition();
-                setPos = true;
-            }
+            holdPos = rightBaseEncoder.getPosition();
+            setPos = true;
+        }
 
+        if (isHolding)
+        {
+        
             if (rightBaseEncoder.getPosition() > holdPos + 1.5)
             {
-                rightBaseMotor.set(-0.2);
+            rightBaseMotor.set(-0.1);
             }
             if (rightBaseEncoder.getPosition() < holdPos - 1.5)
             {
-                rightBaseMotor.set(0.2);
-            }
-            if (rightBaseEncoder.getPosition() < holdPos + 1.5 && rightBaseEncoder.getPosition() > holdPos - 1.5) 
-            {
-                rightBaseMotor.set(0);
+            rightBaseMotor.set(0.1);
             }
         }
+        else
+        {
+            rightBaseMotor.set(0);
+            setPos = false;
+        }
+    }
 
 
         //#CONTROLMANIPULATOR
@@ -563,18 +593,18 @@ public class Manipulator
                 if (IO.dController.getLeftTriggerAxis() > 0.2) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
                 if (!IO.oController.getAButton() && IO.oController.getYButtonPressed() && IO.oController.getXButton() && IO.oController.getBButton()) stopManipulator();
-                if (IO.oController.getAButton()) holdManipulator();
+                // if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
                 if (IO.dController.getBButton()) ampScore();
                 if (!IO.dController.getRightBumper()) stopShoot();
-                if (IO.oController.getYButtonPressed()) intakePosition(5);
+                // if (IO.oController.getYButtonPressed()) intakePosition(5);
                 if (IO.oController.getXButton()) shootPosition();
                 if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
                 if (IO.oController.getBButton()) 
                 {
-                    if (ampPosition(5)) ampScore(4);
+                    if (ampPosition(5, true)) ampScore(4);
                 }
             } 
             else 
@@ -582,7 +612,7 @@ public class Manipulator
                 if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
                 if (IO.dController.getLeftTriggerAxis() > 0.2) rampUpManipulator(IO.dController.getLeftTriggerAxis());
                 if ( ( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
-                if (IO.oController.getAButton()) holdManipulator();
+                // if (IO.oController.getAButton()) holdManipulator();
                 if (IO.dController.getRightBumper()) shootNote();
                 if (IO.dController.getLeftBumper()) intake();
                 if (IO.dController.getAButtonPressed()) reverseIntake();
@@ -607,11 +637,11 @@ public class Manipulator
         {
             if (doesIntake) 
             {
-                if (intakePosition(5)) intake(3);
+                if (intakePosition(5, true)) intake(3);
             }
             if (doesAim) shootPosition(5);
             if (doesShoot) shootNote(3);
-            if (doesAmpAim) ampPosition(5);
+            if (doesAmpAim) ampPosition(5, true);
             if (doesAmp) ampScore(4);
         }
 }

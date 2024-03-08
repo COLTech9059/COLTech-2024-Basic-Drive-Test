@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
   {
     if (ID == 1)
     {
-      manipulator.intakePosition(5);
+      manipulator.intakePosition(5, true);
       manipulator.spinUp();
 
       if (dropTime.get() >= 1.7)
@@ -107,7 +107,7 @@ public class Robot extends TimedRobot {
     }
     if (ID == 3)
     {
-      
+
     }
     return segmentFinished;
   }

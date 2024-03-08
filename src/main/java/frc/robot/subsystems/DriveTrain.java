@@ -50,6 +50,10 @@ public class DriveTrain extends SubsystemBase
 
   Timer turnTimer = new Timer();
 
+  public void drive(double forwardPow, double turnPow) 
+  {
+    HamsterDrive.arcadeDrive(forwardPow *.9, turnPow *-.8, false);
+  }
 
   //#AUTODRIVE
   //This method drives the auto for _ amount of time in a + or - direction

@@ -5,9 +5,6 @@ import frc.robot.subsystems.DriveTrain;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.IO;
-
 public class DriveCommand extends Command
 {
     
@@ -23,30 +20,13 @@ public class DriveCommand extends Command
         turn = t;
         addRequirements(drivetrain);
     }
-
-    @Override
-    public void initialize()
-    {
-
-    }
-
-
+    //# EXECUTE
+    /* Overrides the execute function to constantly drive the robot given inputs.
+     */
     @Override
     public void execute()
     {
-        drivetrain.HamsterDrive.arcadeDrive(forward.getAsDouble(), turn.getAsDouble(), true);
-    }
-
-    @Override
-    public boolean isFinished() 
-    {
-        return false;
-    }
-    
-    @Override
-    public void end(boolean interrupted)
-    {
-        
+        drivetrain.drive(forward.getAsDouble(), turn.getAsDouble());
     }
 
 }

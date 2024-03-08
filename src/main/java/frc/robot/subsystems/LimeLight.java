@@ -1,12 +1,17 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.lang.Character.Subset;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class LimeLight {
+public class LimeLight extends SubsystemBase
+{
 
     // private LED led = new LED();
 
@@ -80,7 +85,11 @@ public class LimeLight {
     }
 
 
-
+    public boolean getEnabled(){
+        return enabled;
+    }
+    
+    
     //#ESTIMATEDIST
     /* Does math to estimate the distance from the limelight to the target.
         Assumes that robot is centered on target.
