@@ -15,7 +15,7 @@ public class FirstSpeakerScore extends Command{
     @Override
     public void initialize(){
         m_Manipulator.moveArm(-.3);
-        m_Manipulator.shootNote(true);
+        m_Manipulator.shootNote(true, false);
         moveTime.start();
     }
     @Override
@@ -27,12 +27,21 @@ public class FirstSpeakerScore extends Command{
         if (moveTime.get() >= 2.5)
         {
             m_Manipulator.runIntake(false, false);
-            m_Manipulator.shootNote(false);
+            m_Manipulator.shootNote(false, false);
             Completed = true;
         }
     }
     @Override
     public boolean isFinished(){
         return Completed;
+    }
+    @Override
+    public void end(boolean interrupted){
+        Completed = false;
+        m_Manipulator.shootNote(false, false);
+        m_Manipulator.runIntake(false, false);
+
+        moveTime.stop();
+        moveTime.reset();
     }
 }

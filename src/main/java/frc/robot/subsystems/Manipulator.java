@@ -35,41 +35,33 @@ public class Manipulator extends SubsystemBase
 
     private boolean usingDigitalSensors = true;
 
-    //#INITIALIZEMANIPULATOR
-    //This method will set up the manipulator for use
-    public void initializeManipulator() 
+    //#MANIPULATOR
+    //This constructor will set up the manipulator for use
+    public Manipulator() 
     {
-
         //Reset the digital sensors boolean
         usingDigitalSensors = true;
 
         //Reset intake boolean
         // if (!beamSensor.get()) {didIntake = false;} else {didIntake = true;}
-
-        //Reset the motors to their factory defaults
-        leftBaseMotor.restoreFactoryDefaults();
-        rightBaseMotor.restoreFactoryDefaults();
-        ampMotor.restoreFactoryDefaults();
-        followerAmpMotor.restoreFactoryDefaults();
-        intakeMotor.restoreFactoryDefaults();
-
         //Set the leftIntakeMotor as a follower
         followerAmpMotor.follow(ampMotor);
-
         //Set the leftBaseMotor as a follower
         leftBaseMotor.follow(rightBaseMotor);
 
         //Set the encoders to 0, effectively resetting them
+        resetEncoders();
+
+        rightBaseMotor.setOpenLoopRampRate(0.25);
+    }
+
+    public void resetEncoders(){
         leftBaseEncoder.setPosition(0);
         rightBaseEncoder.setPosition(0);
         ampEncoder.setPosition(0);
         rightIntakeEncoder.setPosition(0);
         leftIntakeEncoder.setPosition(0);
-
-        rightBaseMotor.setOpenLoopRampRate(0.25);
     }
-
-
 
     //#manualControl
     //This method toggles the use of digital sensors duting teleop
@@ -251,13 +243,6 @@ public class Manipulator extends SubsystemBase
     //         }
     //     }
 
-        //#INTAKE
-        //This method will manually intake a note
-        public void intake() 
-        {
-            intakeMotor.set(0.4);
-        }
-
         Timer revIntakeTime = new Timer();
 
         //#REVERSEINTAKE
@@ -276,14 +261,6 @@ public class Manipulator extends SubsystemBase
                 intakeMotor.set(0);
             }
         }
-
-        //#STOPINTAKE
-        //This method halts the intake motors
-        public void stopIntake() 
-        {
-            intakeMotor.set(0);
-        }
-
 
         private Timer shootTime = new Timer();
         private static Timer shootTimeout = new Timer();
@@ -318,21 +295,6 @@ public class Manipulator extends SubsystemBase
         //         }
         //     }
         // }
-
-        //#SHOOTNOTE
-        //This method will shoot a note manually
-        public void shootNote() 
-        {
-            ampMotor.set(-0.5);
-        }
-
-        //#STOPSHOOT
-        //This method stops the intake and amp motors
-        public void stopShoot() 
-        {
-            ampMotor.set(0);
-        }
-
 
         // private Timer ampTime = new Timer();
         // private static Timer ampTimeout = new Timer();
@@ -391,6 +353,11 @@ public class Manipulator extends SubsystemBase
             else intakeMotor.set(0);
         }
 
+        @Override
+        public void periodic(){
+            manipulatorDashboard();
+        }
+
         //#MOVEMANIPULATOR
         //This method will move the manipulator forward by a set time
         public void moveManipulator(double moveTime, boolean isNegative) 
@@ -421,7 +388,7 @@ public class Manipulator extends SubsystemBase
                 rightBaseMotor.set(0.2);
                 } else 
                 {
-                rightBaseMotor.set(0);
+                // rightBaseMotor.set(0);
                 }
             }
         }
@@ -455,7 +422,7 @@ public class Manipulator extends SubsystemBase
             }
             else
             {
-                rightBaseMotor.set(0);
+                // rightBaseMotor.set(0);
                 setPos = false;
             }
         }

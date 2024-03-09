@@ -13,6 +13,9 @@ public class LimeLightCommand extends Command{
         limelight = newLime;
         drivetrain = newDrive;
         addRequirements(limelight, drivetrain);
+    }
+    @Override
+    public void initialize(){
         limelight.start();
     }
     //# EXECUTE

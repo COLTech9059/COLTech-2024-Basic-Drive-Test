@@ -44,7 +44,7 @@ public class LimeLight extends SubsystemBase {
     //Physical distance of limelight LENS from ground (measured in INCHES)
     private final double LensDistFromGround = 8.5;
     //Physical vertical angle of lens from mount (measured in DEGREES).
-    private final double LensAngleFromMount = 30.0;
+    private final double LensAngleFromMount = 37.5;
     //Physical height of chosen AprilTag.;
     //Correction modifier. I assume it designates how much of a correction you want.
     private final double correctionMod = -.1;
@@ -197,7 +197,7 @@ public class LimeLight extends SubsystemBase {
                 double currentDist = estimateDist();
                 double distError = desiredDist - currentDist; //Distance from desired point. Calculated in Inches.
 
-                if (distError > 2.5 || distError < -2.5)
+                if (distError > 3 || distError < -3)
                 {
                     // led.setBoard("blue");
 
@@ -214,16 +214,16 @@ public class LimeLight extends SubsystemBase {
                         speed = -.325;
                     }
 
-                    double turnPower = -Math.pow((this.currentX*.1), 3);
+                    double turnPower = Math.pow((this.currentX*.1), 3);
 
                     //Cap turn power at 35% of value
-                    if (turnPower < -.25) 
+                    if (turnPower < -.35) 
                     {
-                        turnPower = -.25;
+                        turnPower = -.35;
                     }
-                    else if (turnPower > .25) 
+                    else if (turnPower > .35) 
                     {
-                        turnPower = .25;
+                        turnPower = .35;
                     }
 
                     showTurnPower = turnPower;
@@ -247,7 +247,7 @@ public class LimeLight extends SubsystemBase {
      * On the robot seeing it, centers on the target with a .5 degree range of error.
      * Unknown which way the directions are.
      */
-    private double steeringPow = .275;
+    private double steeringPow = .25;
 
     public boolean seekTarget(DriveTrain driveTrain)
     {
@@ -258,16 +258,16 @@ public class LimeLight extends SubsystemBase {
             targetFound = false;
             // led.setBoard("red");
         }
-        if (enabled) 
+        if (enabled && !targetFound) 
         {
-           if (seekTimer.get() <= 0.0 && !targetFound) seekTimer.start();
+           if (seekTimer.get() <= 0.0) seekTimer.start();
 
-           if (seekTimer.get() > 0.0 && !targetFound)
+           if (seekTimer.get() > 0.0)
            {
             //If target isn't in view, set steeringPow to be a consistent .3. 
                 if (seesTarget == 0.0)
                 {
-                    steeringPow = .275;
+                    steeringPow = .25;
                     driveTrain.drive(0, steeringPow);
                     // led.setBoard("blue");
                 } 
@@ -289,7 +289,7 @@ public class LimeLight extends SubsystemBase {
                         driveTrain.drive(0, steeringPow);
 
                     } 
-                    else if ((currentX < 5 && currentX > -5) && seesTarget != 0.0)
+                    else if ((currentX < 5.0 && currentX > -5.0) && seesTarget != 0.0)
                     {
                         //We have found the target. Stop turning.
                         driveTrain.drive(0, 0);

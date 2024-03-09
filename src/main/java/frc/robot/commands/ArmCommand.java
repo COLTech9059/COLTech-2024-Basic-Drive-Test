@@ -47,8 +47,8 @@ public class ArmCommand extends Command {
         m_Manipulator.moveArm(ArmPower.getAsDouble());
         m_Manipulator.shootNote(shootEnabled.getAsBoolean(), ampActive.getAsBoolean());
         m_Manipulator.runIntake(canReverseIntake.getAsBoolean(), intakeActive.getAsBoolean());
-        m_Manipulator.holdManipulator(holdManipulator.getAsBoolean());
-        m_Manipulator.intakePosition(5, intakePosition.getAsBoolean());
+        // m_Manipulator.holdManipulator(holdManipulator.getAsBoolean());
+        // m_Manipulator.intakePosition(5, intakePosition.getAsBoolean());
 
     }
 }
