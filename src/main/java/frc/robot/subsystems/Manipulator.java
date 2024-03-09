@@ -367,20 +367,6 @@ public class Manipulator extends SubsystemBase
         //         }
         //     }
         // }
-
-        //#AMPSCORE
-        //This method will score in the amp manually
-        public void ampScore(boolean isActive) 
-        {
-            if (isActive)
-            {
-                ampMotor.set(0.3);
-            }
-            if (!isActive)
-            {
-                ampMotor.set(0);
-            }
-        }
         //Autonomous Methods
         private boolean Completed = false;
         public boolean getCompleted(){return Completed;}
@@ -392,15 +378,16 @@ public class Manipulator extends SubsystemBase
         }
         //#SHOOTNOTE
         //Runs the flywheel to shoot the note when RightBumper is pressed.
-        public void shootNote(boolean isActive){
-            if (isActive) ampMotor.set(.5);
+        public void shootNote(boolean highPowerActive, boolean lowPowerActive){
+            if (highPowerActive) ampMotor.set(.5);
+            else if (lowPowerActive) ampMotor.set(.3);
             else ampMotor.set(0);
         }
         //#RUNINTAKE
         //Runs the intake forward or backward based on the button pressed.
         public void runIntake(boolean isReverse, boolean isActive){
-            if (!isReverse && isActive) intakeMotor.set(-.4);
-            else if (isReverse && !isActive) intakeMotor.set(.2);
+            if (isActive) intakeMotor.set(-.4);
+            else if (isReverse) intakeMotor.set(.2);
             else intakeMotor.set(0);
         }
 

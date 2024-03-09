@@ -207,23 +207,23 @@ public class LimeLight extends SubsystemBase {
                     //Cap the speed at 45%
                     if (drivingAdjust > 0) 
                     {
-                        speed = .45;
+                        speed = .325;
                     }
                     else if (drivingAdjust < 0)
                     {
-                        speed = -.45;
+                        speed = -.325;
                     }
 
-                    double turnPower = Math.pow((this.currentX*.1), 3);
+                    double turnPower = -Math.pow((this.currentX*.1), 3);
 
                     //Cap turn power at 35% of value
-                    if (turnPower < -.35) 
+                    if (turnPower < -.25) 
                     {
-                        turnPower = -.35;
+                        turnPower = -.25;
                     }
-                    else if (turnPower > .35) 
+                    else if (turnPower > .25) 
                     {
-                        turnPower = .35;
+                        turnPower = .25;
                     }
 
                     showTurnPower = turnPower;
@@ -247,7 +247,7 @@ public class LimeLight extends SubsystemBase {
      * On the robot seeing it, centers on the target with a .5 degree range of error.
      * Unknown which way the directions are.
      */
-    private double steeringPow = .35;
+    private double steeringPow = .275;
 
     public boolean seekTarget(DriveTrain driveTrain)
     {
@@ -267,7 +267,7 @@ public class LimeLight extends SubsystemBase {
             //If target isn't in view, set steeringPow to be a consistent .3. 
                 if (seesTarget == 0.0)
                 {
-                    steeringPow = .35;
+                    steeringPow = .275;
                     driveTrain.drive(0, steeringPow);
                     // led.setBoard("blue");
                 } 
@@ -279,11 +279,11 @@ public class LimeLight extends SubsystemBase {
                     {
                         if (currentX > 0.0) 
                         {
-                            steeringPow = .4;
+                            steeringPow = .275;
                         }
                         else if (currentX < 0.0) 
                         {
-                            steeringPow = -.4;
+                            steeringPow = -.275;
                         }
 
                         driveTrain.drive(0, steeringPow);

@@ -28,4 +28,10 @@ public class LimeLightCommand extends Command{
     public boolean isFinished(){
         return limelight.getEnabled();
     }
+
+    @Override
+    public void end(boolean interrupted){
+        limelight.stop();
+    }
+
 }

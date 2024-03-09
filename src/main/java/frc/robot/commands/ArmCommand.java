@@ -40,14 +40,13 @@ public class ArmCommand extends Command {
 
         addRequirements(m_Manipulator);
     }
-    
+
     @Override
     public void execute(){
         //Move arm based on power
         m_Manipulator.moveArm(ArmPower.getAsDouble());
-        m_Manipulator.shootNote(shootEnabled.getAsBoolean());
+        m_Manipulator.shootNote(shootEnabled.getAsBoolean(), ampActive.getAsBoolean());
         m_Manipulator.runIntake(canReverseIntake.getAsBoolean(), intakeActive.getAsBoolean());
-        m_Manipulator.ampScore(ampActive.getAsBoolean());
         m_Manipulator.holdManipulator(holdManipulator.getAsBoolean());
         m_Manipulator.intakePosition(5, intakePosition.getAsBoolean());
 
