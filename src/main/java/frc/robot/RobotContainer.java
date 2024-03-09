@@ -4,7 +4,6 @@ import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.XboxController;
-// import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
     //Subsystem declarations.
@@ -15,7 +14,7 @@ public class RobotContainer {
     private final XboxController xbContMovement = new XboxController(0);
     private final XboxController xbContArm = new XboxController(1);
     //Autonomous Command.
-    private final Command m_autonomousCommand = new Autonomous(m_DriveTrain, m_LimeLight);
+    private final Command m_autonomousCommand = new Autonomous(m_DriveTrain, m_LimeLight, m_Manipulator);
 
     public RobotContainer()
     {
@@ -39,8 +38,10 @@ public class RobotContainer {
                 () -> xbContMovement.getLeftBumper(),
                 () -> xbContMovement.getAButton(),
                 () -> xbContMovement.getBButton(),
+                () -> xbContArm.getBButton(),
                 () -> xbContArm.getAButton(),
-                () -> xbContArm.getYButton()
+                () -> xbContArm.getYButton(),
+                () -> xbContArm.getXButton()
              )
         );
         //Future possible commands here.

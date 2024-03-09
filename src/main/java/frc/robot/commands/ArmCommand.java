@@ -40,7 +40,7 @@ public class ArmCommand extends Command {
 
         addRequirements(m_Manipulator);
     }
-
+    
     @Override
     public void execute(){
         //Move arm based on power

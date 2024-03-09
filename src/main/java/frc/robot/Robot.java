@@ -5,14 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-// import frc.robot.commands.DriveCommand;
-// import frc.robot.subsystems.DriveTrain;
-// import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.Manipulator;
-// import java.util.function.DoubleSupplier;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,13 +18,6 @@ public class Robot extends TimedRobot {
   //Autonomous command????
   private Command m_autonomousCommand;
   //Objects to be used in various robot functions.
-  // private DriveTrain drivetrain = new DriveTrain();
-  // private LimeLight limelight = new LimeLight();
-  // private Manipulator manipulator = new Manipulator();
-  //Set up DriveCommand and its DoubleSuppliers.
-  // private DoubleSupplier forward = () -> IO.dController.getLeftY();
-  // private DoubleSupplier turn = () -> IO.dController.getRightX();
-  // private DriveCommand dCommand = new DriveCommand(drivetrain, forward, turn);
   //Robot Container
   private RobotContainer m_RobotContainer;
 
@@ -42,8 +29,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    // drivetrain.factoryReset();
-    // manipulator.initializeManipulator();
 
     m_RobotContainer = new RobotContainer();
   }
@@ -62,16 +47,11 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    // manipulator.manipulatorDashboard();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    // manipulator.initializeManipulator();
-    // dCommand.cancel();
-    // drivetrain.reset();
-    // limelight.stop();
   }
 
   @Override
@@ -85,14 +65,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    // limelight.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    // limelight.runLimelight(drivetrain);
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() {
@@ -103,17 +80,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // dCommand.schedule();
-
-    // limelight.stop();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    // drivetrain.drive();
-    // manipulator.controlManipulator();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

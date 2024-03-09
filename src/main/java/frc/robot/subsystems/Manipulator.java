@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.IO;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -375,36 +374,30 @@ public class Manipulator extends SubsystemBase
         {
             if (isActive)
             {
-                ampMotor.set(-0.3);
+                ampMotor.set(0.3);
             }
             if (!isActive)
             {
                 ampMotor.set(0);
             }
         }
-
-
-        // //#MOVEMANIPULATOR
-        // //This method will move the manipulator forward
-        // public void moveManipulator(boolean isNegative) 
-        // {
-        //     if (!isNegative) 
-        //     {   
-        //         rightBaseMotor.set(-0.3);
-        //     } 
-        //     else 
-        //     {
-        //         rightBaseMotor.set(0.3);
-        //     }   
-        // }
-
+        //Autonomous Methods
+        private boolean Completed = false;
+        public boolean getCompleted(){return Completed;}
+        //Controller (Command) methods
+        //#MOVEARM
+        //Powers the arm motor based on the triggers
         public void moveArm(double ArmPower){
             rightBaseMotor.set(-ArmPower);
         }
+        //#SHOOTNOTE
+        //Runs the flywheel to shoot the note when RightBumper is pressed.
         public void shootNote(boolean isActive){
             if (isActive) ampMotor.set(.5);
             else ampMotor.set(0);
         }
+        //#RUNINTAKE
+        //Runs the intake forward or backward based on the button pressed.
         public void runIntake(boolean isReverse, boolean isActive){
             if (!isReverse && isActive) intakeMotor.set(-.4);
             else if (isReverse && !isActive) intakeMotor.set(.2);
@@ -446,24 +439,6 @@ public class Manipulator extends SubsystemBase
             }
         }
 
-
-        //#RAMPUPMANIPULATOR
-        //This method will increase the movement speed of the manipulator as the trigger is held more
-        public void rampUpManipulator(double power) 
-        {
-            double moveSpeed = 0;
-            moveSpeed = power * .80;
-            rightBaseMotor.set(moveSpeed);
-        }
-
-
-        // #STOPMANIPULATOR
-        //This method stops the manipulator motors
-        public void stopManipulator() 
-        {
-            rightBaseMotor.set(0);
-        }
-
         
             boolean setPos = false;
             double holdPos = 0;
@@ -496,68 +471,5 @@ public class Manipulator extends SubsystemBase
                 rightBaseMotor.set(0);
                 setPos = false;
             }
-        }
-
-
-        //#CONTROLMANIPULATOR
-        //This method will add keybinds for all the control methods in the manipulator class
-        public void controlManipulator() 
-        {
-            if (IO.dController.getStartButtonPressed()) manualControl();
-            
-            if (!usingDigitalSensors) 
-            {
-                if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
-                if ( !IO.oController.getYButton() && !IO.oController.getXButton() && (( IO.oController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 ))) stopManipulator();
-                // if (IO.oController.getAButton()) holdManipulator();
-                if (IO.dController.getRightBumper()) shootNote();
-                // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
-                if (IO.dController.getLeftBumper()) intake();
-                if (IO.dController.getAButtonPressed()) reverseIntake();
-                // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
-                // if (IO.dController.getBButton()) ampScore();
-                if (!IO.dController.getRightBumper()) stopShoot();
-                // if (IO.oController.getYButton()) intakePosition(5);
-                if (IO.oController.getXButton()) shootPosition();
-                if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
-                // if (IO.oController.getBButton()) 
-                // {
-                //     ampPosition(5);
-                //     ampScore(4);
-                // }
-            } 
-            else 
-            {
-                if (IO.dController.getRightTriggerAxis() > 0.2) rampUpManipulator(-IO.dController.getRightTriggerAxis());
-                if (IO.dController.getLeftTriggerAxis() > 0.2 && intakeSensor.get()) rampUpManipulator(IO.dController.getLeftTriggerAxis());
-                if (( IO.dController.getLeftTriggerAxis() < 0.2 && IO.dController.getRightTriggerAxis() < 0.2 ) || ( IO.dController.getLeftTriggerAxis() > 0.2 && IO.dController.getRightTriggerAxis() > 0.2 )) stopManipulator();
-                // if (IO.oController.getAButton()) holdManipulator();
-                if (IO.dController.getRightBumper()) shootNote();
-                // if (IO.dController.getRightTriggerAxis() < 0.4) stopShoot();
-                if (IO.dController.getLeftBumper()) intake();
-                if (IO.dController.getAButtonPressed()) reverseIntake();
-                // if (IO.dController.getLeftTriggerAxis() < 0.4) stopIntake();
-                // if (IO.dController.getBButton()) ampScore();
-                if (!IO.dController.getRightBumper()) stopShoot();
-                if (!IO.dController.getLeftBumper() && !IO.dController.getAButton()) stopIntake();
-            }
-        }
-
-
-
-        //#AUTOMANIPULATOR
-        //This method will do all of the actions for our manipulator during auto
-        public void autoManipulator(boolean doesIntake, boolean doesAim, boolean doesShoot, boolean doesAmpAim, boolean doesAmp) 
-        {
-        //     if (doesIntake) 
-        //     {
-        //         intakePosition(5);
-        //         intake(3);
-        //     }
-        //     if (doesAim) shootPosition(5);
-        //     if (doesShoot) shootNote(3);
-        //     if (doesAmpAim) ampPosition(5);
-        //     if (doesAmp) ampScore(4);
         }
 }

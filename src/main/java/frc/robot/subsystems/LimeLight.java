@@ -44,7 +44,7 @@ public class LimeLight extends SubsystemBase {
     //Physical distance of limelight LENS from ground (measured in INCHES)
     private final double LensDistFromGround = 8.5;
     //Physical vertical angle of lens from mount (measured in DEGREES).
-    private final double LensAngleFromMount = 22.0;
+    private final double LensAngleFromMount = 30.0;
     //Physical height of chosen AprilTag.;
     //Correction modifier. I assume it designates how much of a correction you want.
     private final double correctionMod = -.1;
@@ -329,7 +329,7 @@ public class LimeLight extends SubsystemBase {
     }
 
     public boolean getEnabled(){
-        return enabled;
+        return !enabled;
     }
 
     public void runLimelight (DriveTrain drivetrain) 
