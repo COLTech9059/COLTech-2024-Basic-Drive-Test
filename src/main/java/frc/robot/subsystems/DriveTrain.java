@@ -19,14 +19,14 @@ public class DriveTrain extends SubsystemBase
   /** Creates a new ExampleSubsystem. */
 
     //create motor controller objects
-    private static CANSparkMax leftLead = new CANSparkMax(2, MotorType.kBrushless);
-    private static CANSparkMax rightLead = new CANSparkMax(3, MotorType.kBrushless);
-    private static CANSparkMax leftFollower = new CANSparkMax(4, MotorType.kBrushless);
-    private static CANSparkMax rightFollower = new CANSparkMax(5, MotorType.kBrushless);
+    private CANSparkMax leftLead = new CANSparkMax(2, MotorType.kBrushless);
+    private CANSparkMax rightLead = new CANSparkMax(3, MotorType.kBrushless);
+    private CANSparkMax leftFollower = new CANSparkMax(4, MotorType.kBrushless);
+    private CANSparkMax rightFollower = new CANSparkMax(5, MotorType.kBrushless);
   
     //create encoder objects
-    static RelativeEncoder leftEncoder = leftLead.getEncoder();
-    static RelativeEncoder rightEncoder = rightLead.getEncoder();
+    public RelativeEncoder leftEncoder = leftLead.getEncoder();
+    public RelativeEncoder rightEncoder = rightLead.getEncoder();
   
     // Create the differential drive object
     public final DifferentialDrive HamsterDrive = new DifferentialDrive(leftLead, rightLead);
@@ -119,7 +119,7 @@ public class DriveTrain extends SubsystemBase
 
   //#ENCODERMATH
   //This function handles all of the math and data necessary to use the encoders
-  public static void encoderMath() 
+  public void encoderMath() 
   {
     //All the math to convert encoder rotations to horizontal distance in inches
     rightWheelRotations = rightEncoder.getPosition() / 8.45;
