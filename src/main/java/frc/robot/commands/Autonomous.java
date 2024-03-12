@@ -8,10 +8,12 @@ public class Autonomous extends SequentialCommandGroup {
     public Autonomous(DriveTrain dT, LimeLight LL, Manipulator M){
         //Add more commands to this list to increase the functionality of Autonomous.
         addCommands(
-            new SpeakerScore(M, true, 1.7, 2.5),
-            new MoveForwardInches(dT, M, .35, 36.0),
-            new LimeLightCommand(LL, dT),
-            new SpeakerScore(M, false, .5, 1)
+            new SpeakerScore(M, true, true, 1.75, 2.5),
+            new MoveForwardInches(dT, M, 0.35, 18.5, true),
+            // new LimeLightCommand(LL, dT),
+            new MoveForwardInches(dT, M, -0.35, 17.0, false),
+            new SpeakerScore(M, true, false, 0.6, 1.2),
+            new MoveForwardInches(dT, M, 0.35, 35.0, false)
             );
     }
 }

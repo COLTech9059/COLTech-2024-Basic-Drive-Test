@@ -8,20 +8,24 @@ public class MoveForwardInches extends Command{
     private final Manipulator manipulator;
     private final double speed;
     private final double distance;
+    private final boolean intake;
     private double travelledDistance = 0.0;
 
-    public MoveForwardInches(DriveTrain dT, Manipulator M, double speed, double distance){
+    public MoveForwardInches(DriveTrain dT, Manipulator M, double speed, double distance, boolean enableIntake){
         drivetrain = dT;
         manipulator = M;
+        intake = enableIntake;
         this.speed = speed;
         this.distance = Math.abs(distance);
+        addRequirements(drivetrain, manipulator);
     }
 
     @Override
     public void initialize(){
         drivetrain.leftEncoder.setPosition(0.0);
         drivetrain.rightEncoder.setPosition(0.0);
-        manipulator.runIntake(false, true);
+        travelledDistance = 0.0;
+        if (intake) manipulator.runIntake(false, true);
     }
 
     @Override
@@ -29,7 +33,7 @@ public class MoveForwardInches extends Command{
         travelledDistance = Math.abs(drivetrain.rightEncoder.getPosition() / 8.45 * 18);
 
         //Drive forward until the distance has been travelled
-        if (travelledDistance < distance) drivetrain.drive(speed, 0);
+        if (travelledDistance < distance) drivetrain.drive(-speed, 0);
     }
 
     @Override

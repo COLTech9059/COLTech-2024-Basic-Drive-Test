@@ -10,18 +10,22 @@ public class SpeakerScore extends Command{
     private final double startTime;
     private final double endTime;
     private final boolean enableArm;
+    private final boolean armDirection;
     private boolean Completed = false;
-    public SpeakerScore(Manipulator manip, boolean enableArm, double start, double end){
+    public SpeakerScore(Manipulator manip, boolean enableArm, boolean armDirection, double start, double end){
         m_Manipulator = manip;
         startTime = start;
         endTime = end;
+        this.armDirection = armDirection;
         this.enableArm = enableArm;
 
         addRequirements(m_Manipulator);
     }
     @Override
     public void initialize(){
-        if (enableArm) m_Manipulator.moveArm(-.3);
+        double directionMultiplier = -1;
+        if (armDirection) directionMultiplier = 1;
+        if (enableArm) m_Manipulator.moveArm(-.3 * directionMultiplier);
         m_Manipulator.shootNote(true, false);
         moveTime.start();
     }
