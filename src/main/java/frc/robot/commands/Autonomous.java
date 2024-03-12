@@ -9,7 +9,7 @@ public class Autonomous extends SequentialCommandGroup {
         //Add more commands to this list to increase the functionality of Autonomous.
         addCommands(
             new SpeakerScore(M, true, 1.7, 2.5),
-            new MoveForwardInches(dT, M, .45, 48.0),
+            new MoveForwardInches(dT, M, .35, 36.0),
             new LimeLightCommand(LL, dT),
             new SpeakerScore(M, false, .5, 1)
             );

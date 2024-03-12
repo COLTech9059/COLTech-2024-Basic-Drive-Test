@@ -26,7 +26,7 @@ public class MoveForwardInches extends Command{
 
     @Override
     public void execute(){
-        travelledDistance += Math.abs(drivetrain.rightEncoder.getPosition() / 8.45 * 18);
+        travelledDistance = Math.abs(drivetrain.rightEncoder.getPosition() / 8.45 * 18);
 
         //Drive forward until the distance has been travelled
         if (travelledDistance < distance) drivetrain.drive(speed, 0);
